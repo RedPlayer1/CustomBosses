@@ -1,0 +1,27 @@
+# NOTE: All strings (unless marked otherwise) in this config are compatible with the
+#   MiniMessage format (See: https://docs.advntr.dev/minimessage/format.html & https://webui.advntr.dev/)
+
+Messages:
+  no-permission: "<dark_red><bold>You aren't allowed to do this."
+
+Boss:
+  # Valid placeholders are {name} and {health}
+  nameFormat: "{name} | {health} ♥"
+
+  # Valid placeholders for the spawn & death messages are:
+  #   {boss} - name of the boss
+  #   {player} - name of the player who spawned/killed the boss (when applicable)
+
+  # Broadcast a message when a boss is spawned.
+  broadcastSpawn: false
+  # when a player has spawned a boss
+  spawnBroadcastMessagePlayer: "----------<newline>{player} has spawned a {boss}<newline>----------"
+  # when nobody or an anonymous entity spawned a boss. {player} doesn't work
+  spawnBroadcastMessageAnonymous: "----------<newline>{boss} has been spawned<newline>----------"
+
+  # Broadcast a message when a boss is killed.
+  broadcastDeath: true
+  # when a player killed a boss
+  deathBroadcastMessagePlayer: "----------<newline>{player} has killed a {boss}<newline>----------"
+  # when nobody or an anonymous entity killed a boss. {player} doesn't work
+  deathBroadcastMessageAnonymous: "----------<newline>{boss} has been killed<newline>----------"
