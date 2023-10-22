@@ -36,7 +36,7 @@ public class PlayerListener implements Listener {
         LivingEntity killer = lastDamager.damager;
 
         // alter the kill message if it's a boss
-        if (killer.hasMetadata("NPC") && killer.hasMetadata(Boss.UUID_METADATA_KEY)) {
+        if (Boss.isBoss(killer)) {
             // get the uuid from the boss's metadata
             Boss boss = Boss.getBoss(UUID.fromString(killer.getMetadata(Boss.UUID_METADATA_KEY).get(0).asString()));
             if (boss != null) {
@@ -45,7 +45,6 @@ public class PlayerListener implements Listener {
         }
     }
 
-    record TimedPlayerDamager(LivingEntity damager, long timeMillis) {
-    }
+    record TimedPlayerDamager(LivingEntity damager, long timeMillis) {}
 }
 

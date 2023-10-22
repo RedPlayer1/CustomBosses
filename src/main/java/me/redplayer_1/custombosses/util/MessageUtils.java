@@ -1,6 +1,10 @@
 package me.redplayer_1.custombosses.util;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+
 public class MessageUtils {
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
     /**
      * Replaces any occurrences of the placeholder names with the string representation of the element at the same index in placeholderValues.
@@ -17,5 +21,9 @@ public class MessageUtils {
             result = result.replace(placeholderNames[i], placeholderValues[i].toString());
         }
         return result;
+    }
+
+    public static Component miniMessageToComponent(String miniMessage) {
+        return MINI_MESSAGE.deserialize(miniMessage);
     }
 }

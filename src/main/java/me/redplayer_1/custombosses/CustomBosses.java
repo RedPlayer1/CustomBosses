@@ -1,13 +1,10 @@
 package me.redplayer_1.custombosses;
 
-import me.redplayer_1.custombosses.boss.BossTrait;
+import me.redplayer_1.custombosses.boss.Boss;
 import me.redplayer_1.custombosses.command.BossCommand;
 import me.redplayer_1.custombosses.config.Config;
 import me.redplayer_1.custombosses.events.PlayerListener;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -16,7 +13,6 @@ public final class CustomBosses extends JavaPlugin {
     private static CustomBosses instance;
     private Config settings;
 
-    @SuppressWarnings("DataFlowIssue")
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -38,7 +34,11 @@ public final class CustomBosses extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        // Bosses shouldn't persist shutdowns
+        getLogger().info("Removing all spawned bosses. . .");
+        for (Boss boss : Boss.getRegistry().values()) {
+            boss.despawn();
+        }
     }
 
     public static CustomBosses getInstance() {

@@ -10,7 +10,7 @@ import org.bukkit.util.Vector;
 
 public class FireballAbility implements BossAbility {
     @Override
-    public void use(Boss boss, Player target) {
+    public boolean use(Boss boss, Player target) {
         Location bossLoc = boss.getLocation();
         if (bossLoc != null) {
             bossLoc.getWorld().spawnEntity(bossLoc, EntityType.FIREBALL, CreatureSpawnEvent.SpawnReason.CUSTOM,
@@ -18,7 +18,18 @@ public class FireballAbility implements BossAbility {
                 entity.setVisualFire(false);
                 entity.setVelocity(new Vector(2, -2, 2));
                     });
+            return true;
         }
+        return false;
+    }
 
+    @Override
+    public String getName() {
+        return "Fireball";
+    }
+
+    @Override
+    public boolean isSingleTarget() {
+        return true;
     }
 }
