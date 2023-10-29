@@ -12,9 +12,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.text.DecimalFormat;
+import java.util.UUID;
 
 public class BossTrait extends Trait {
     Boss parentBoss;
+    UUID bukkitUUID;
     DecimalFormat healthFormat = new DecimalFormat("0.00");
     Player closestPlayer = null;
 
@@ -44,6 +46,7 @@ public class BossTrait extends Trait {
     @Override
     public void onSpawn() {
         //store the boss's uuid in its entity's metadata
+        bukkitUUID = getNPC().getEntity().getUniqueId();
         getNPC().getEntity().setMetadata(Boss.UUID_METADATA_KEY, new FixedMetadataValue(CustomBosses.getInstance(), parentBoss.getEntity().getUniqueId().toString()));
 
         // create a task to use the boss's abilities every so often
@@ -67,8 +70,8 @@ public class BossTrait extends Trait {
     @Override
     public void onDespawn(DespawnReason reason) {
         if (reason == DespawnReason.DEATH) {
-            parentBoss.kill(PlayerListener.getLastDamager(getNPC().getEntity().getUniqueId()));
-            PlayerListener.removeLastDamager(getNPC().getEntity().getUniqueId());
+            parentBoss.kill(PlayerListener.getLastDamager(bukkitUUID));
+            PlayerListener.removeLastDamager(bukkitUUID);
         } else {
             parentBoss.despawn();
         }
