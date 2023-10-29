@@ -6,10 +6,13 @@ import me.redplayer_1.custombosses.abilities.CooldownBossAbility;
 import me.redplayer_1.custombosses.config.providers.BossConfig;
 import me.redplayer_1.custombosses.util.LocationUtils;
 import me.redplayer_1.custombosses.util.MessageUtils;
+import me.redplayer_1.custombosses.util.SyntaxParser;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -25,9 +28,10 @@ public abstract class Boss {
     private static final Random random = new Random();
     private static final HashMap<UUID, Boss> registry = new HashMap<>();
     private final DecimalFormat healthFormat = new DecimalFormat("0.00");
+    private final SyntaxParser msgParser = new SyntaxParser(new String[]{"{player}", "{boss}"});
     public static final String UUID_METADATA_KEY = "boss_uuid";
     private NPC entity;
-    private List<BossAbility> abilities;
+    private final List<BossAbility> abilities;
     private final UUID uuid;
     private final BossConfig config;
 
@@ -49,20 +53,32 @@ public abstract class Boss {
      *
      * @param loc the location to spawn the boss
      */
-    public void spawn(Location loc) {
+    public final void spawn(Location loc, @Nullable Entity spawner) {
         entity = CitizensAPI.getNPCRegistry().createNPC(EntityType.valueOf(config.getEntityType()), config.getName());
         entity.addTrait(new BossTrait(this));
         entity.setProtected(false);
+        onPreSpawn(loc);
         entity.spawn(loc);
         entity.getEntity().setInvulnerable(false);
         registerBoss(this);
+        onSpawn();
+        // announce spawn
+        FileConfiguration settings = CustomBosses.getInstance().getSettings().getConfig();
+        if (settings.getBoolean("Boss.broadcastSpawn")) {
+            String broadcastMsg;
+            if (spawner != null) {
+                broadcastMsg = msgParser.parse(settings.getString("Boss.spawnBroadcastMessagePlayer"), spawner.getName(), config.getName());
+            } else {
+                broadcastMsg = msgParser.parse(settings.getString("Boss.spawnBroadcastMessageAnonymous"), null, config.getName());
+            }
+            Bukkit.broadcast(MessageUtils.miniMessageToComponent(broadcastMsg));
+        }
     }
 
     /**
-     * Despawns the boss. When overriding, make sure to call
-     * the super method
+     * Despawns the boss. This will instantly destroy the boss and its related data.
      */
-    public void despawn() {
+    public final void despawn() {
         if (entity.isSpawned()) {
             ((LivingEntity) entity.getEntity()).setHealth(0);
             entity.despawn();
@@ -70,11 +86,33 @@ public abstract class Boss {
         unregisterBoss(this);
     }
 
+    /**
+     * Kills and automatically despawn the boss. Called right before the boss is killed
+     *
+     * @param killer the entity who killed the boss
+     */
+    public final void kill(@Nullable LivingEntity killer) {
+        // announce death
+        FileConfiguration settings = CustomBosses.getInstance().getSettings().getConfig();
+        if (settings.getBoolean("Boss.broadcastDeath")) {
+            String deathMsg;
+            if (killer != null) {
+                deathMsg = msgParser.parse(settings.getString("Boss.deathBroadcastMessagePlayer"), killer.getName(), config.getName());
+            } else {
+                deathMsg = msgParser.parse(settings.getString("Boss.deathBroadcastMessageAnonymous"), null, config.getName());
+            }
+            Bukkit.broadcast(MessageUtils.miniMessageToComponent(deathMsg));
+        }
+        // trigger event
+        onKill(killer);
+        despawn();
+    }
+
     protected void useAbility() {
         if (abilities.isEmpty()) return;
         for (BossAbility ability : abilities) {
             // calculate chance
-            if (random.nextInt(1, 100) <= ability.getChance()*100) {
+            if (random.nextInt(1, 100) <= ability.getChance() * 100) {
                 if (ability instanceof CooldownBossAbility cba && !cba.canUse()) {
                     // return if the ability has an unreached cooldown
                     return;
@@ -104,8 +142,13 @@ public abstract class Boss {
         }
     }
 
+    public abstract void onPreSpawn(Location spawnLocation);
+
+    public abstract void onSpawn();
+
     /**
      * Fired when the boss is killed by an entity.
+     *
      * @param killer the entity who killed the boss
      */
     public abstract void onKill(@Nullable LivingEntity killer);

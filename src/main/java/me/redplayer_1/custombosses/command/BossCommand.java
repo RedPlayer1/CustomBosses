@@ -38,7 +38,7 @@ public class BossCommand implements TabExecutor {
                     return true;
                 }
                 player.sendPlainMessage("Spawning a " + boss.getConfig().getName() + ".");
-                boss.spawn(player.getLocation());
+                boss.spawn(player.getLocation(), player);
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             player.sendPlainMessage("Invalid Arguments!");

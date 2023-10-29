@@ -2,10 +2,10 @@ package me.redplayer_1.custombosses.boss;
 
 import me.redplayer_1.custombosses.CustomBosses;
 import me.redplayer_1.custombosses.abilities.BossAbility;
+import me.redplayer_1.custombosses.events.PlayerListener;
 import me.redplayer_1.custombosses.util.LocationUtils;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.trait.Trait;
-import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -26,11 +26,8 @@ public class BossTrait extends Trait {
     @Override
     public void run() {
         // ignore if entity is dead
-        if (getNPC().getEntity() == null) return;
-        if (getNPC().getEntity().isDead()) {
-            parentBoss.despawn();
-            return;
-        }
+        if (getNPC().getEntity() == null || getNPC().getEntity().isDead()) return;
+
         // choose a player to target (must be within range)
         closestPlayer = LocationUtils.getClosestPlayer(getNPC().getStoredLocation(), true, parentBoss.getConfig().getAttackRange());
 
@@ -69,17 +66,11 @@ public class BossTrait extends Trait {
 
     @Override
     public void onDespawn(DespawnReason reason) {
-        // bosses shouldn't persist after server reload/restart
         if (reason == DespawnReason.DEATH) {
-            EntityDamageEvent damageCause = npc.getEntity().getLastDamageCause();
-            if (damageCause == null || !(damageCause.getEntity() instanceof LivingEntity)) {
-                // TODO: anonymous death broadcast (if enabled)
-                parentBoss.onKill(null);
-            } else {
-                // TODO: entity death broadcast (if enabled)
-                parentBoss.onKill((LivingEntity) damageCause.getEntity());
-            }
+            parentBoss.kill(PlayerListener.getLastDamager(getNPC().getEntity().getUniqueId()));
+            PlayerListener.removeLastDamager(getNPC().getEntity().getUniqueId());
+        } else {
+            parentBoss.despawn();
         }
-        parentBoss.despawn();
     }
 }

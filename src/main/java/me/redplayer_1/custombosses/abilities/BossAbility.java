@@ -14,7 +14,8 @@ public interface BossAbility {
 
     /**
      * Fired when an entity attacks and this ability was chosen
-     * @param boss the boss using the ability
+     *
+     * @param boss   the boss using the ability
      * @param target the player the ability is being used on
      * @return whether the ability was activated successfully (if not, a new one is chosen)
      */
@@ -22,17 +23,21 @@ public interface BossAbility {
 
     /**
      * Whether the ability should be used on all surrounding entities or just one
+     *
      * @return if the ability will target 1 or 1+ entities
      */
     boolean isSingleTarget();
+
     /**
      * The name of the ability. This can include MiniMessage delimiters
+     *
      * @return the player-friendly name of this ability
      */
     String getName();
 
     /**
      * Specifies the chance for this ability to be used
+     *
      * @return the chance as a decimal
      */
     default double getChance() {

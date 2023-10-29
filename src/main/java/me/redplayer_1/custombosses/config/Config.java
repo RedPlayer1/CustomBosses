@@ -11,13 +11,14 @@ import java.io.InputStream;
 import java.nio.file.Files;
 
 public class Config {
-    private File pluginDir;
-    private FileConfiguration fileConfig;
-    private File file;
+    private final File pluginDir;
+    private final FileConfiguration fileConfig;
+    private final File file;
 
     /**
      * Attempts to load the specified file. If it doesn't exist, the file is created.
      * However, if a file exists in resources, that is copied to the directory.
+     *
      * @param fileName the name of the file (without the postfix)
      */
     public Config(String fileName) throws IOException, InvalidConfigurationException {

@@ -29,8 +29,11 @@ public class TestAbilityBoss extends Boss {
     }
 
     @Override
-    public void spawn(Location loc) {
-        super.spawn(loc);
+    public void onPreSpawn(Location spawnLocation) {
+    }
+
+    @Override
+    public void onSpawn() {
         // give the boss fire resistance to stop damage from lightning ability
         ((LivingEntity) getEntity().getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION, 1, false, false));
     }

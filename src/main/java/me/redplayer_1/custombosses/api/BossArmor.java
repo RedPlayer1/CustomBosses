@@ -13,12 +13,14 @@ public abstract class BossArmor {
 
     /**
      * Fired when the player wearing the armor is damaged by any entity
+     *
      * @return the damage the player should take
      */
     public abstract int onHit(/* damager & damaged*/);
 
     /**
      * Fired when the player wearing the armor is damaged by a boss
+     *
      * @return the damage the player should take
      */
     public int onBossHit(/* damager (boss) & damaged*/) {

@@ -15,8 +15,8 @@ public class FireballAbility implements BossAbility {
         if (bossLoc != null) {
             bossLoc.getWorld().spawnEntity(bossLoc, EntityType.FIREBALL, CreatureSpawnEvent.SpawnReason.CUSTOM,
                     entity -> {
-                entity.setVisualFire(false);
-                entity.setVelocity(new Vector(2, -2, 2));
+                        entity.setVisualFire(false);
+                        entity.setVelocity(new Vector(2, -2, 2));
                     });
             return true;
         }

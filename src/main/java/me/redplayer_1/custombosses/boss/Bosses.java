@@ -12,7 +12,7 @@ public enum Bosses {
         int index = 0;
         for (Bosses i : values()) {
             strings[index] = i.name();
-            index ++;
+            index++;
         }
         names = strings;
     }
@@ -20,6 +20,7 @@ public enum Bosses {
     // cache names for efficiency
     private static final String[] names;
     private final Boss boss;
+
     Bosses(Boss boss) {
         this.boss = boss;
     }

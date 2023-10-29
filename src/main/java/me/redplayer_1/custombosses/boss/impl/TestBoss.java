@@ -1,10 +1,8 @@
 package me.redplayer_1.custombosses.boss.impl;
 
-import me.redplayer_1.custombosses.abilities.BossAbility;
 import me.redplayer_1.custombosses.abilities.impl.MinionAbility;
 import me.redplayer_1.custombosses.boss.Boss;
 import me.redplayer_1.custombosses.config.providers.BossConfig;
-import me.redplayer_1.custombosses.util.LocationUtils;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -24,11 +22,13 @@ public class TestBoss extends Boss {
     }
 
     @Override
-    public void spawn(Location loc) {
-        loc.getWorld().playEffect(loc, Effect.ELECTRIC_SPARK, null);
-        loc.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, loc, 20, 0, 1, 0);
-        super.spawn(loc);
+    public void onPreSpawn(Location spawnLocation) {
+        spawnLocation.getWorld().playEffect(spawnLocation, Effect.ELECTRIC_SPARK, null);
+        spawnLocation.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, spawnLocation, 20, 0, 1, 0);
+    }
 
+    @Override
+    public void onSpawn() {
         // boss is a zombie, so we disable fire damage for it
         ((LivingEntity) getEntity().getEntity()).addPotionEffect(
                 new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION, 1, false, false)

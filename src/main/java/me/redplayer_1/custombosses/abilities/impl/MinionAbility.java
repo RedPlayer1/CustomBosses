@@ -11,7 +11,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class MinionAbility extends CooldownBossAbility {
-    private String name = "<gradient:#73ff00:#83ff6e>Minion</gradient>";
+    private final String name = "<gradient:#73ff00:#83ff6e>Minion</gradient>";
+
     @Override
     public boolean use(Boss boss, Player target) {
         Location loc = boss.getLocation();

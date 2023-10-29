@@ -16,7 +16,8 @@ public abstract class BossWeapon {
 
     /**
      * Fired when the player wielding the weapon left clicks with it
-     * @param event the triggered event
+     *
+     * @param event  the triggered event
      * @param entity the entity that was clicked on
      */
     public abstract void onLeftClick(PlayerInteractEvent event, @Nullable Entity entity/* the event (from listener) */);
