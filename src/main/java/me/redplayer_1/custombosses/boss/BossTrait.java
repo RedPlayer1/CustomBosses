@@ -8,7 +8,6 @@ import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.trait.Trait;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.text.DecimalFormat;
