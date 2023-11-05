@@ -11,5 +11,5 @@ public interface BossArmor {
      *
      * @return the damage the player should take
      */
-    public abstract int onDamage(/* damager (boss?) & damaged*/);
+    int onDamage(/* damager (boss?) & damaged*/);
 }
