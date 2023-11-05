@@ -63,7 +63,8 @@ public class PlayerListener implements Listener {
             Boss boss = Boss.getBoss(UUID.fromString(killer.getMetadata(Boss.UUID_METADATA_KEY).get(0).asString()));
             if (boss != null) {
                 event.deathMessage(MessageUtils.miniMessageToComponent(
-                        deathMsgParser.parse(CustomBosses.getInstance().getSettings().getConfig().getString("Boss.deathBroadcastMessagePlayer"), killed.getName(), boss.getConfig().getName())
+                        deathMsgParser.parse(CustomBosses.getInstance().getSettings().getConfig().getString("Boss.playerDeathMessage", ""),
+                                killed.getName(), boss.getConfig().getName())
                 ));
             }
         }
