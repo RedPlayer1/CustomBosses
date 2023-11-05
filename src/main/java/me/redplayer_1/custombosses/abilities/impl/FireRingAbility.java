@@ -34,7 +34,7 @@ public class FireRingAbility implements BossAbility {
 
     @Override
     public String getName() {
-        return "Fire Ring";
+        return "<gradient:#ff7300:#ff4800>Fire Ring</gradient>";
     }
 
     @Override
