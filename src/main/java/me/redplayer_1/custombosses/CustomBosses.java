@@ -19,6 +19,7 @@ public final class CustomBosses extends JavaPlugin {
     - Spawn Eggs (custom attributes)
     - Custom Enchants
     - Boss Armor & Weapons
+    - Boss Difficulty (increases chance of re-roll if no ability selected, more damage, more HP)
      */
     private static CustomBosses instance;
     private Config settings;
@@ -30,7 +31,7 @@ public final class CustomBosses extends JavaPlugin {
         try {
             settings = new Config("settings");
         } catch (IOException | InvalidConfigurationException e) {
-            getLogger().severe("Something went wrong while loading the config! Make sure it contains valid syntax.");
+            getLogger().severe("Something went wrong while loading the config! Make sure it contains valid syntax. \n(" + e.getMessage() + ")");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
