@@ -3,6 +3,7 @@
 
 Messages:
   no-permission: "<dark_red><bold>You aren't allowed to do this."
+  credits: "<dark_red>۞</dark_red> <red>Made by <bold>RedPlayer_1</bold> <dark_red>۞</dark_red>"
 
 Boss:
   # Valid placeholders are {name} and {health}
@@ -13,15 +14,18 @@ Boss:
   #   {player} - name of the player who spawned/killed the boss (when applicable)
 
   # Broadcast a message when a boss is spawned.
-  broadcastSpawn: false
+  broadcastSpawn: true
   # when a player has spawned a boss
-  spawnBroadcastMessagePlayer: "----------<newline>{player} has spawned a {boss}<newline>----------"
+  spawnBroadcastMessagePlayer: "<dark_gray>-------------------<newline><reset>{player} <gray>has spawned a <red>{boss}<gray>!<newline><dark_gray>-------------------<newline>"
   # when nobody or an anonymous entity spawned a boss. {player} doesn't work
-  spawnBroadcastMessageAnonymous: "----------<newline>{boss} has been spawned<newline>----------"
+  spawnBroadcastMessageAnonymous: "<dark_gray>-------------------<newline><red>{boss} <gray>has been spawned!<dark_gray>-------------------<newline>"
 
   # Broadcast a message when a boss is killed.
   broadcastDeath: true
   # when a player killed a boss
-  deathBroadcastMessagePlayer: "----------<newline>{player} has killed a {boss}<newline>----------"
+  deathBroadcastMessagePlayer: "<dark_gray>-------------------<newline><reset>{player}<gray> has killed a <red>{boss}<gray>!<newline><dark_gray>-------------------"
   # when nobody or an anonymous entity killed a boss. {player} doesn't work
-  deathBroadcastMessageAnonymous: "----------<newline>{boss} has been killed<newline>----------"
+  deathBroadcastMessageAnonymous: "<dark_gray>-------------------<newline><red>{boss}<gray> has been killed<gray>!<dark_gray>-------------------<newline>"
+
+  # the message that is shown to players on the death screen and in chat when killed by a boss
+  playerDeathMessage: "<red><dark_red><bold>☠</bold></dark_red> {player} was killed by a {boss}</red>"
