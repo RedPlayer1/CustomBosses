@@ -1,7 +1,6 @@
 package me.redplayer_1.custombosses.boss.impl;
 
 import me.redplayer_1.custombosses.abilities.impl.FireRingAbility;
-import me.redplayer_1.custombosses.abilities.impl.MinionAbility;
 import me.redplayer_1.custombosses.boss.Boss;
 import me.redplayer_1.custombosses.config.providers.BossConfig;
 import org.bukkit.Effect;
