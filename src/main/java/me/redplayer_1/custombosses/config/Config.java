@@ -24,8 +24,9 @@ public class Config {
     public Config(String fileName) throws IOException, InvalidConfigurationException {
         pluginDir = CustomBosses.getInstance().getDataFolder();
         file = new File(pluginDir.getPath() + "/" + fileName + ".yml");
+
         if (!file.exists()) {
-            //InputStream inputStream = CustomBosses.getInstance().getResource(fileName);
+            file.getParentFile().mkdirs();
             InputStream inputStream = Config.class.getClassLoader().getResourceAsStream(fileName + ".yml");
             if (inputStream != null) {
                 Files.copy(inputStream, file.toPath());
