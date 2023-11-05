@@ -56,6 +56,7 @@ public class PlayerListener implements Listener {
         }
         // get entity that last damaged the player & check its validity
         LivingEntity killer = getLastDamager(killed.getUniqueId());
+        if (killer == null) return;
 
         // alter the kill message if it's a boss
         if (Boss.isBoss(killer)) {
