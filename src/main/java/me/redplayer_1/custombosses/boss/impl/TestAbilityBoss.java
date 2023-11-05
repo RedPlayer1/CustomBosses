@@ -1,6 +1,6 @@
 package me.redplayer_1.custombosses.boss.impl;
 
-import me.redplayer_1.custombosses.abilities.impl.FireballAbility;
+import me.redplayer_1.custombosses.abilities.impl.FireRingAbility;
 import me.redplayer_1.custombosses.abilities.impl.ThunderstormAbility;
 import me.redplayer_1.custombosses.boss.Boss;
 import me.redplayer_1.custombosses.config.providers.BossConfig;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 public class TestAbilityBoss extends Boss {
 
     public TestAbilityBoss() {
-        super(new BossConfig("HUSK", "Ability Boss", 10, 7), new ThunderstormAbility(), new FireballAbility());
+        super(new BossConfig("HUSK", "Ability Boss", 10, 7), new ThunderstormAbility(), new FireRingAbility());
     }
 
     @Override

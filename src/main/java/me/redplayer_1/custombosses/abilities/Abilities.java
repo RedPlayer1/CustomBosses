@@ -1,9 +1,9 @@
 package me.redplayer_1.custombosses.abilities;
 
-import me.redplayer_1.custombosses.abilities.impl.FireballAbility;
+import me.redplayer_1.custombosses.abilities.impl.FireRingAbility;
 
 public enum Abilities {
-    FIREBALL(new FireballAbility());
+    FIREBALL(new FireRingAbility());
 
     public final BossAbility ability;
 

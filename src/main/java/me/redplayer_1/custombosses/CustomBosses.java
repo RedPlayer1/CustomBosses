@@ -10,6 +10,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 
 public final class CustomBosses extends JavaPlugin {
+    /*
+    TODO:
+    - PAPI Hook (boss kills)
+    - Hologram Hook (leaderboards)
+    - More Abilities
+    - More Bosses
+    - Spawn Eggs (custom attributes)
+    - Custom Enchants
+    - Boss Armor & Weapons
+     */
     private static CustomBosses instance;
     private Config settings;
 

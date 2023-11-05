@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.util.Vector;
 
-public class FireballAbility implements BossAbility {
+public class FireRingAbility implements BossAbility {
     @Override
     public boolean use(Boss boss, Player target) {
         Location bossLoc = boss.getLocation();
