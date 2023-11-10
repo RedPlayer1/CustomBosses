@@ -7,8 +7,18 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-public class FireRingAbility implements BossAbility {
+public class FireRingAbility extends BossAbility {
     private static final int FIRE_TICKS = 120;
+
+    public FireRingAbility() {
+        super("<gradient:#ff7300:#ff4800>Fire Ring</gradient>", true, 0.5);
+    }
+
+    @Override
+    public BossAbility newInstance() {
+        return new FireRingAbility();
+    }
+
     @Override
     public boolean use(Boss boss, Player target) {
         Location bossLoc = boss.getLocation();
@@ -30,20 +40,5 @@ public class FireRingAbility implements BossAbility {
         }
 
         return true;
-    }
-
-    @Override
-    public String getName() {
-        return "<gradient:#ff7300:#ff4800>Fire Ring</gradient>";
-    }
-
-    @Override
-    public boolean isSingleTarget() {
-        return true;
-    }
-
-    @Override
-    public double getChance() {
-        return 0.5;
     }
 }
