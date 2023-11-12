@@ -4,16 +4,19 @@ import me.redplayer_1.custombosses.boss.Boss;
 import me.redplayer_1.custombosses.boss.Bosses;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class BossCommand implements TabExecutor {
+public class BossCommand extends Command {
+
+    public BossCommand() {
+        super("boss", "the root command for all boss utilities", "/boss <args>", Arrays.asList("boss", "custombosses"));
+    }
+
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
         if (!(sender instanceof Player player)) return true;
 
         try {
@@ -47,8 +50,7 @@ public class BossCommand implements TabExecutor {
     }
 
     @Override
-    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
         if (args.length == 1) {
             return List.of(Bosses.names());
         } else if (args.length == 2) {

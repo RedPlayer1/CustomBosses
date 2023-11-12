@@ -5,19 +5,20 @@ import org.bukkit.entity.Player;
 
 // TODO: ability config?
 public abstract class BossAbility {
-
     // the number of ticks to wait before trying to use an ability
     public static final long DEFAULT_USAGE_DELAY = 60L;
 
     // Format w/ boss name, ability name, target name
     public static final String USAGE_MESSAGE = "<red>%s</red> used %s";
 
-    private String name;
-    private boolean singleTarget;
-    private double chance;
+    private final String name;
+    private final boolean singleTarget;
+    private final double chance;
 
     public BossAbility(String name, boolean singleTarget, double chance) {
-
+        this.name = name;
+        this.singleTarget = singleTarget;
+        this.chance = chance;
     }
 
     public abstract BossAbility newInstance();

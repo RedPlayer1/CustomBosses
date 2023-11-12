@@ -17,6 +17,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Nullable;
@@ -60,8 +61,12 @@ public abstract class Boss {
         onPreSpawn(loc);
         entity.spawn(loc);
         entity.getEntity().setInvulnerable(false);
+
         registerBoss(this);
+        // put the NPC's uuid in the boss entity's metadata (this uuid is also used as a key for the registry)
+        entity.getEntity().setMetadata(UUID_METADATA_KEY, new FixedMetadataValue(CustomBosses.getInstance(), entity.getUniqueId().toString()));
         onSpawn();
+
         // announce spawn
         FileConfiguration settings = CustomBosses.getInstance().getSettings().getConfig();
         if (settings.getBoolean("Boss.broadcastSpawn")) {
@@ -200,5 +205,10 @@ public abstract class Boss {
 
     public static boolean isBoss(Entity entity) {
         return entity.hasMetadata("NPC") && entity.hasMetadata(UUID_METADATA_KEY);
+    }
+
+    public static @Nullable Boss of(Entity entity) {
+        if (!isBoss(entity)) return null;
+        return registry.get(UUID.fromString(entity.getMetadata(UUID_METADATA_KEY).get(0).asString()));
     }
 }
