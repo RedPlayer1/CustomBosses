@@ -1,0 +1,21 @@
+name: CustomBosses
+version: '1.0'
+main: me.redplayer_1.custombosses.CustomBosses
+description: A custom bosses plugin
+authors:
+  - RedPlayer_1
+api-version: '1.20'
+commands:
+  boss:
+    description: root command for all boss utilities
+    usage: /boss <args>
+dependencies:
+  server:
+    Citizens:
+      load: BEFORE
+      required: true
+      join-classpath: true
+    PlaceHolderAPI:
+      load: BEFORE
+      required: false
+      join-classpath: true
