@@ -14,11 +14,12 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class PlayerListener implements Listener {
+public class MainListener implements Listener {
     private static final int LAST_DAMAGE_LIFETIME = 30000; // 30 seconds (in ticks)
     private final SyntaxParser deathMsgParser = new SyntaxParser(new String[]{"{player}", "{boss}"}, new String[0]);
 
@@ -29,10 +30,14 @@ public class PlayerListener implements Listener {
         // create a background task to periodically clean lastDamagers
         final long delay = 2;
         Bukkit.getAsyncScheduler().runAtFixedRate(CustomBosses.getInstance(), (task) -> {
+            LinkedList<UUID> removalQueue = new LinkedList<>(); // use a queue to avoid a
             for (Map.Entry<UUID, TimedPlayerDamager> entry : lastDamagers.entrySet()) {
                 if ((System.currentTimeMillis() - entry.getValue().timeMillis) > LAST_DAMAGE_LIFETIME) {
-                    lastDamagers.remove(entry.getKey());
+                    removalQueue.add(entry.getKey());
                 }
+            }
+            for (UUID uuid : removalQueue) {
+                lastDamagers.remove(uuid);
             }
         }, delay, delay, TimeUnit.MINUTES);
     }
