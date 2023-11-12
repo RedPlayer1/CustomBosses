@@ -6,6 +6,7 @@ import me.redplayer_1.custombosses.events.MainListener;
 import me.redplayer_1.custombosses.util.LocationUtils;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.trait.TraitName;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -13,6 +14,8 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.text.DecimalFormat;
 import java.util.UUID;
 
+
+@TraitName("custombosstrait")
 public class BossTrait extends Trait {
     Boss parentBoss;
     UUID bukkitUUID;
@@ -24,10 +27,20 @@ public class BossTrait extends Trait {
         this.parentBoss = parentBoss;
     }
 
+    @Deprecated(forRemoval = false)
+    public BossTrait() {
+        // never use this constructor as it only exists for compatibility with Citizens
+        super("custombosstrait");
+        parentBoss = null;
+    }
+
     @Override
     public void run() {
         // ignore if entity is dead
-        if (getNPC().getEntity() == null || getNPC().getEntity().isDead()) return;
+        if (parentBoss == null || getNPC().getEntity() == null || getNPC().getEntity().isDead()) {
+            getNPC().destroy();
+            return;
+        }
 
         // choose a player to target (must be within range)
         closestPlayer = LocationUtils.getClosestPlayer(getNPC().getStoredLocation(), true, parentBoss.getConfig().getAttackRange());
@@ -44,6 +57,9 @@ public class BossTrait extends Trait {
 
     @Override
     public void onSpawn() {
+        if (parentBoss == null) {
+            return;
+        }
         //store the boss's uuid in its entity's metadata
         bukkitUUID = getNPC().getEntity().getUniqueId();
         getNPC().getEntity().setMetadata(Boss.UUID_METADATA_KEY, new FixedMetadataValue(CustomBosses.getInstance(), parentBoss.getEntity().getUniqueId().toString()));
