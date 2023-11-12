@@ -1,6 +1,6 @@
 package me.redplayer_1.custombosses.boss.impl;
 
-import me.redplayer_1.custombosses.abilities.impl.FireRingAbility;
+import me.redplayer_1.custombosses.abilities.impl.InvincibilityAbility;
 import me.redplayer_1.custombosses.boss.Boss;
 import me.redplayer_1.custombosses.config.providers.BossConfig;
 import org.bukkit.Effect;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TestBoss extends Boss {
     public TestBoss() {
-        super(new BossConfig("ZOMBIE", "Test Boss", 20, 15), new FireRingAbility());
+        super(new BossConfig("ZOMBIE", "Test Boss", 20, 15), new InvincibilityAbility());
     }
 
     @Override
