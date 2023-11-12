@@ -16,16 +16,16 @@ Boss:
   # Broadcast a message when a boss is spawned.
   broadcastSpawn: true
   # when a player has spawned a boss
-  spawnBroadcastMessagePlayer: "<dark_gray>-------------------<newline><reset>{player} <gray>has spawned a <red>{boss}<gray>!<newline><dark_gray>-------------------<newline>"
+  spawnBroadcastMessagePlayer: "<dark_gray>-------------------<newline><reset>{player} <gray>has spawned a <red>{boss}<gray>!<newline><dark_gray>-------------------"
   # when nobody or an anonymous entity spawned a boss. {player} doesn't work
-  spawnBroadcastMessageAnonymous: "<dark_gray>-------------------<newline><red>{boss} <gray>has been spawned!<dark_gray>-------------------<newline>"
+  spawnBroadcastMessageAnonymous: "<dark_gray>-------------------<newline><red>{boss} <gray>has been spawned!<newline><dark_gray>-------------------"
 
   # Broadcast a message when a boss is killed.
   broadcastDeath: true
   # when a player killed a boss
   deathBroadcastMessagePlayer: "<dark_gray>-------------------<newline><reset>{player}<gray> has killed a <red>{boss}<gray>!<newline><dark_gray>-------------------"
   # when nobody or an anonymous entity killed a boss. {player} doesn't work
-  deathBroadcastMessageAnonymous: "<dark_gray>-------------------<newline><red>{boss}<gray> has been killed<gray>!<dark_gray>-------------------<newline>"
+  deathBroadcastMessageAnonymous: "<dark_gray>-------------------<newline><red>{boss}<gray> has been killed<gray>!<newline><dark_gray>-------------------"
 
   # the message that is shown to players on the death screen and in chat when killed by a boss
   playerDeathMessage: "<red><dark_red><bold>☠</bold></dark_red> {player} was killed by a {boss}</red>"
