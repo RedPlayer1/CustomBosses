@@ -1,6 +1,7 @@
 package me.redplayer_1.custombosses.config;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,19 @@ public class ConfigMap<K, V> {
         this.vToString = vToString;
         this.stringToK = stringToK;
         this.stringToV = stringToV;
+    }
+
+    public ConfigMap(Function<K, String> kToString, Function<V, String> vToString, Function<String, K> stringToK, Function<String, V> stringToV, HashMap<K, V> origin) {
+        this(kToString, vToString, stringToK, stringToV);
+        map = origin;
+    }
+
+    public void put(K key, V value) {
+        map.put(key, value);
+    }
+
+    public @Nullable V get(K key) {
+        return map.get(key);
     }
 
     /**
@@ -38,11 +52,23 @@ public class ConfigMap<K, V> {
      * @param path The root path of the map in the config
      */
     public void loadFrom(Config config, String path) {
+        loadFrom(config, path, null);
+    }
+
+    /**
+     * Attempts to load the map from the config. If not found, it is set to the default value.
+     * @param config the config to load from
+     * @param path the root path of the map in the config
+     * @param def the default value
+     */
+    public void loadFrom(Config config, String path, @Nullable HashMap<K, V> def) {
         ConfigurationSection section = config.getConfig().getConfigurationSection(path);
         if (section != null) {
             for (String i : section.getKeys(false)) {
                 map.put(stringToK.apply(i), stringToV.apply(section.getString(i, "")));
             }
+        } else if (def != null){
+            map = def;
         }
     }
 }

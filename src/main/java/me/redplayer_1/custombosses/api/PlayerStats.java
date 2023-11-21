@@ -3,8 +3,8 @@ package me.redplayer_1.custombosses.api;
 import me.redplayer_1.custombosses.CustomBosses;
 import me.redplayer_1.custombosses.boss.BossType;
 import me.redplayer_1.custombosses.config.Config;
+import me.redplayer_1.custombosses.config.ConfigMap;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,38 +15,21 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PlayerStats {
-    private static final File dataDir = new File(CustomBosses.getInstance().getDataFolder().getPath() + File.separator + "data");
+    private static Config globalConfig;
     private static HashMap<UUID, PlayerStats> registry = new HashMap<>();
-    private static Map<BossType, Integer> globalKills = getDefaultDataTable();
-    private static Map<BossType, Integer> globalSpawns = getDefaultDataTable();
-
+    private static ConfigMap<BossType, Integer> globalKills = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);
+    private static ConfigMap<BossType, Integer> globalSpawns = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);
     private Config data;
     private UUID uuid;
-    private Map<BossType, Integer> bossKills = getDefaultDataTable();
-    private Map<BossType, Integer> bossSpawns = getDefaultDataTable();
+    private ConfigMap<BossType, Integer> bossKills = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);;
+    private ConfigMap<BossType, Integer> bossSpawns = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);;
 
     static {
-        // ensure existence of data directory
-        dataDir.mkdirs();
         // get global info from file
         try {
-            Config globalConf = new Config("GlobalStats");
-            // load kills
-            if (globalConf.getConfig().getConfigurationSection("Kills") != null) {
-                Map<String, Object> kills = globalConf.getConfig().getConfigurationSection("Kills").getValues(false);
-                for (Map.Entry<String, Object> entry : kills.entrySet()) {
-                    globalKills.put(BossType.valueOf(entry.getKey()), (Integer) entry.getValue());
-                }
-            }
-            // load spawns
-            if (globalConf.getConfig().getConfigurationSection("Spawns") != null) {
-                Map<String, Object> spawns = globalConf.getConfig().getConfigurationSection("Spawns").getValues(false);
-                for (Map.Entry<String, Object> entry : spawns.entrySet()) {
-                    globalSpawns.put(BossType.valueOf(entry.getKey()), (Integer) entry.getValue());
-                }
-            }
-
-            globalConf.save();
+            globalConfig = new Config("GlobalStats");
+            globalSpawns.loadFrom(globalConfig, "Spawns", getDefaultDataTable());
+            globalKills.loadFrom(globalConfig, "Kills", getDefaultDataTable());
         } catch (IOException | InvalidConfigurationException e) {
             Bukkit.getLogger().severe("Error whilst saving global data!");
         }
@@ -55,24 +38,11 @@ public class PlayerStats {
     public PlayerStats(UUID uuid) {
         this.uuid = uuid;
         try {
-            data = new Config(dataDir.getPath() + File.separator + uuid);
+            // load data
+            data = new Config("data" + File.separator + uuid);
+            bossSpawns.loadFrom(data, "Spawns", getDefaultDataTable());
+            bossKills.loadFrom(data, "Kills", getDefaultDataTable());
 
-            // load spawns
-            ConfigurationSection section = data.getConfig().getConfigurationSection("Spawns");
-            if (section != null) {
-                Map<String, Object> spawns = section.getValues(false);
-                for (Map.Entry<String, Object> entry : spawns.entrySet()) {
-                    bossSpawns.put(BossType.valueOf(entry.getKey()), (Integer) entry.getValue());
-                }
-            }
-            // load kills
-            section = data.getConfig().getConfigurationSection("Kills");
-            if (section != null) {
-                Map<String, Object> kills = section.getValues(false);
-                for (Map.Entry<String, Object> entry : kills.entrySet()) {
-                    bossKills.put(BossType.valueOf(entry.getKey()), (Integer) entry.getValue());
-                }
-            }
         } catch (IOException e) {
             Bukkit.getLogger().severe("IOException whilst loading data for player " + uuid + "!");
         } catch (InvalidConfigurationException e) {
@@ -87,8 +57,18 @@ public class PlayerStats {
      * @param type the type of boss spawned
      */
     public void incrementSpawn(BossType type) {
-        bossSpawns.put(type, bossSpawns.get(type) + 1);
-        globalSpawns.put(type, globalSpawns.get(type) + 1);
+        Integer val = bossSpawns.get(type);
+        if (val == null) {
+            bossSpawns.put(type, 1);
+        } else {
+            bossSpawns.put(type, val + 1);
+        }
+        val = globalSpawns.get(type);
+        if (val == null) {
+            globalSpawns.put(type, 1);
+        } else {
+            globalSpawns.put(type, val + 1);
+        }
     }
 
     /**
@@ -96,8 +76,18 @@ public class PlayerStats {
      * @param type the type of boss killed
      */
     public void incrementKill(BossType type) {
-        bossKills.put(type, bossKills.get(type) + 1);
-        globalKills.put(type, globalKills.get(type) + 1);
+        Integer val = bossKills.get(type);
+        if (val == null) {
+            bossKills.put(type, 1);
+        } else {
+            bossKills.put(type, val + 1);
+        }
+        val = globalKills.get(type);
+        if (val == null) {
+            globalKills.put(type, 1);
+        } else {
+            globalKills.put(type, val + 1);
+        }
     }
 
     /**
@@ -105,18 +95,8 @@ public class PlayerStats {
      * @param remove whether this instance should be removed from the registry (only use on player logouts)
      */
     public void save(boolean remove) {
-        // TODO save hashmaps
-        HashMap<String, String> strMap = new HashMap<>();
-        for (Map.Entry<BossType, Integer> entry : bossSpawns.entrySet()) {
-            strMap.put(entry.getKey().name(), entry.getValue().toString());
-        }
-        data.getConfig().createSection("Spawns", strMap);
-        strMap.clear();
-
-        for (Map.Entry<BossType, Integer> entry : bossKills.entrySet()) {
-            strMap.put(entry.getKey().name(), entry.getValue().toString());
-        }
-        data.getConfig().createSection("Kills", strMap);
+        bossSpawns.saveTo(data, "Spawns");
+        bossKills.saveTo(data, "Kills");
         data.save();
 
         if (remove) {
@@ -130,24 +110,14 @@ public class PlayerStats {
      */
     public static void saveAllPlayers(boolean removeFromRegistry) {
         for (PlayerStats stats : registry.values()) {
-            stats.save(false);
-        }
-        if (removeFromRegistry) {
-            registry.clear();
+            stats.save(removeFromRegistry);
         }
     }
 
     public static void saveGlobal() {
-        try {
-            Config globalConf = new Config("GlobalStats");
-
-            globalConf.getConfig().createSection("Kills", globalKills);
-            globalConf.getConfig().createSection("Spawns", globalSpawns);
-
-            globalConf.save();
-        } catch (IOException | InvalidConfigurationException e) {
-            Bukkit.getLogger().severe("Error whilst saving global data!");
-        }
+        globalSpawns.saveTo(globalConfig, "Spawns");
+        globalKills.saveTo(globalConfig, "Kills");
+        globalConfig.save();
     }
 
     /**
@@ -161,7 +131,7 @@ public class PlayerStats {
             // if the player is online, get most recent info from registry
             return registry.get(uuid);
         }
-        File dataFile = new File(dataDir.getPath() + File.separator + uuid);
+        File dataFile = new File(CustomBosses.getInstance().getDataFolder().getPath() + File.separator + "data");
         if (dataFile.exists()) {
             return new PlayerStats(uuid);
         }
@@ -178,8 +148,8 @@ public class PlayerStats {
     /**
      * @return a map with all possible keys having the value 0
      */
-    private static Map<BossType, Integer> getDefaultDataTable() {
-        Map<BossType, Integer> result = new HashMap<>();
+    private static HashMap<BossType, Integer> getDefaultDataTable() {
+        HashMap<BossType, Integer> result = new HashMap<>();
         for (BossType type : BossType.values()) {
             result.put(type, 0);
         }
