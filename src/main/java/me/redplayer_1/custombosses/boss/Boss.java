@@ -3,6 +3,7 @@ package me.redplayer_1.custombosses.boss;
 import me.redplayer_1.custombosses.CustomBosses;
 import me.redplayer_1.custombosses.abilities.BossAbility;
 import me.redplayer_1.custombosses.abilities.CooldownBossAbility;
+import me.redplayer_1.custombosses.api.PlayerStats;
 import me.redplayer_1.custombosses.config.providers.BossConfig;
 import me.redplayer_1.custombosses.util.LocationUtils;
 import me.redplayer_1.custombosses.util.MessageUtils;
@@ -65,6 +66,12 @@ public abstract class Boss {
         registerBoss(this);
         // put the NPC's uuid in the boss entity's metadata (this uuid is also used as a key for the registry)
         entity.getEntity().setMetadata(UUID_METADATA_KEY, new FixedMetadataValue(CustomBosses.getInstance(), entity.getUniqueId().toString()));
+        if (spawner != null) {
+            PlayerStats stats = PlayerStats.getRegistry().get(spawner.getUniqueId());
+            if (stats != null) {
+                stats.incrementSpawn(BossFactory.typeOf(this));
+            }
+        }
         onSpawn();
 
         // announce spawn
@@ -109,6 +116,12 @@ public abstract class Boss {
             Bukkit.broadcast(MessageUtils.miniMessageToComponent(deathMsg));
         }
         // trigger event
+        if (killer != null) {
+            PlayerStats stats = PlayerStats.getRegistry().get(killer.getUniqueId());
+            if (stats != null) {
+                stats.incrementKill(BossFactory.typeOf(this));
+            }
+        }
         onKill(killer);
         despawn();
     }

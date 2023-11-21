@@ -1,0 +1,21 @@
+package me.redplayer_1.custombosses.events;
+
+import me.redplayer_1.custombosses.api.PlayerStats;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+
+public class PlayerListener implements Listener {
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        // add player to stat registry
+        new PlayerStats(event.getPlayer().getUniqueId());
+    }
+
+    @EventHandler
+    public void onLeave(PlayerQuitEvent event) {
+        // save player's stats
+        PlayerStats.getRegistry().get(event.getPlayer().getUniqueId()).save(true);
+    }
+}

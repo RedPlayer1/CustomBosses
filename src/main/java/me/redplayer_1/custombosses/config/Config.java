@@ -1,6 +1,7 @@
 package me.redplayer_1.custombosses.config;
 
 import me.redplayer_1.custombosses.CustomBosses;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -39,7 +40,24 @@ public class Config {
         fileConfig.load(file);
     }
 
+    /**
+     * @return The {@link FileConfiguration} for this Config
+     */
     public FileConfiguration getConfig() {
         return fileConfig;
+    }
+
+    /**
+     * Attempts to save the FileConfiguration to disk
+     * @return whether the file was saved successfully
+     */
+    public boolean save() {
+        try {
+            fileConfig.save(file);
+            return true;
+        } catch (IOException e) {
+            Bukkit.getLogger().severe("Error whilst saving '" + file.getName() + "' to disk!");
+            return false;
+        }
     }
 }
