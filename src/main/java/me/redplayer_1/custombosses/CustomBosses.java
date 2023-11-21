@@ -1,18 +1,20 @@
 package me.redplayer_1.custombosses;
 
+import me.redplayer_1.custombosses.api.PlayerStats;
 import me.redplayer_1.custombosses.boss.Boss;
 import me.redplayer_1.custombosses.boss.BossTrait;
 import me.redplayer_1.custombosses.command.BossCommand;
 import me.redplayer_1.custombosses.config.Config;
-import me.redplayer_1.custombosses.events.MainListener;
+import me.redplayer_1.custombosses.events.DamageListener;
+import me.redplayer_1.custombosses.events.PlayerListener;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 public final class CustomBosses extends JavaPlugin {
@@ -26,7 +28,7 @@ public final class CustomBosses extends JavaPlugin {
     - Custom Enchants
     - Boss Armor & Weapons
     - Boss Difficulty (increases chance of re-roll if no ability selected, more damage, more HP)
-    - Boss Persistence (serialize on shutdown - avoid unregistered trait error)
+    - FINISH saving stats to file (see PlayerStats.save())
      */
     private static CustomBosses instance;
     private Config settings;
@@ -46,7 +48,8 @@ public final class CustomBosses extends JavaPlugin {
         CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(BossTrait.class));
 
         // Listeners
-        getServer().getPluginManager().registerEvents(new MainListener(), this);
+        getServer().getPluginManager().registerEvents(new DamageListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 
         // Commands
         Bukkit.getCommandMap().register("custombosses", new BossCommand());
@@ -60,6 +63,9 @@ public final class CustomBosses extends JavaPlugin {
         for (Boss boss : despawnQueue) {
             boss.despawn();
         }
+        // save stats
+        PlayerStats.saveAllPlayers(true);
+        PlayerStats.saveGlobal();
     }
 
     public static CustomBosses getInstance() {

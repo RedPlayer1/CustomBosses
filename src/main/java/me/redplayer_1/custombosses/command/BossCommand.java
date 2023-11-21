@@ -1,7 +1,8 @@
 package me.redplayer_1.custombosses.command;
 
 import me.redplayer_1.custombosses.boss.Boss;
-import me.redplayer_1.custombosses.boss.Bosses;
+import me.redplayer_1.custombosses.boss.BossFactory;
+import me.redplayer_1.custombosses.boss.BossType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,7 +23,7 @@ public class BossCommand extends Command {
         try {
             if (args[1].equalsIgnoreCase("despawn")) {
                 // despawn all bosses of that type
-                String targetBoss = Bosses.valueOf(args[0].toUpperCase()).name();
+                String targetBoss = BossType.valueOf(args[0].toUpperCase()).name();
                 List<Boss> despawnQueue = new LinkedList<>();
 
                 for (Map.Entry<UUID, Boss> i : Boss.getRegistry().entrySet()) {
@@ -35,13 +36,13 @@ public class BossCommand extends Command {
                 }
             } else if (args[1].equalsIgnoreCase("spawn")) {
                 // spawn a new boss of that type
-                Boss boss = Bosses.valueOf(args[0].toUpperCase()).get().copy();
-                if (boss == null) {
+                try {
+                    Boss boss = BossFactory.create(BossType.valueOf(args[0].toUpperCase()));
+                    player.sendPlainMessage("Spawning a " + boss.getConfig().getName() + ".");
+                    boss.spawn(player.getLocation(), player);
+                } catch (IllegalArgumentException e) {
                     player.sendPlainMessage("Invalid Name!");
-                    return true;
                 }
-                player.sendPlainMessage("Spawning a " + boss.getConfig().getName() + ".");
-                boss.spawn(player.getLocation(), player);
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             player.sendPlainMessage("Invalid Arguments!");
@@ -52,7 +53,7 @@ public class BossCommand extends Command {
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
         if (args.length == 1) {
-            return List.of(Bosses.names());
+            return List.of(BossType.values);
         } else if (args.length == 2) {
             return List.of("spawn", "despawn");
         } else {

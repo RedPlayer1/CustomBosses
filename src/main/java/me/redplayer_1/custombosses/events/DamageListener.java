@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class MainListener implements Listener {
+public class DamageListener implements Listener {
     private static final int LAST_DAMAGE_LIFETIME = 30000; // 30 seconds (in ticks)
     private final SyntaxParser deathMsgParser = new SyntaxParser(new String[]{"{player}", "{boss}"}, new String[0]);
 

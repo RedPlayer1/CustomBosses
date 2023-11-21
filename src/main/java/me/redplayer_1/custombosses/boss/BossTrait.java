@@ -2,7 +2,7 @@ package me.redplayer_1.custombosses.boss;
 
 import me.redplayer_1.custombosses.CustomBosses;
 import me.redplayer_1.custombosses.abilities.BossAbility;
-import me.redplayer_1.custombosses.events.MainListener;
+import me.redplayer_1.custombosses.events.DamageListener;
 import me.redplayer_1.custombosses.util.LocationUtils;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.trait.Trait;
@@ -85,8 +85,8 @@ public class BossTrait extends Trait {
     @Override
     public void onDespawn(DespawnReason reason) {
         if (reason == DespawnReason.DEATH) {
-            parentBoss.kill(MainListener.getLastDamager(bukkitUUID));
-            MainListener.removeLastDamager(bukkitUUID);
+            parentBoss.kill(DamageListener.getLastDamager(bukkitUUID));
+            DamageListener.removeLastDamager(bukkitUUID);
         } else {
             parentBoss.despawn();
         }
