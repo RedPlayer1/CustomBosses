@@ -127,9 +127,7 @@ public abstract class Boss {
     }
 
     protected void useAbility() {
-        System.out.println("Attempt ability usage");
         if (abilities.isEmpty()) return;
-        System.out.println("wasn't empty");
         for (BossAbility ability : abilities) {
             // calculate chance
             if (random.nextInt(1, 100) <= ability.getChance() * 100) {

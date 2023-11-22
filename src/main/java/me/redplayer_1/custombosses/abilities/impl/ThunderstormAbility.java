@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 public class ThunderstormAbility extends BossAbility {
 
     public ThunderstormAbility() {
-        super("<gradient:yellow:gold>Thunderstorm</gradient>", false, 0.75);
+        super("<gradient:yellow:gold>Thunderstorm</gradient>", false, 0.6);
     }
 
     @Override
