@@ -38,7 +38,7 @@ public class BossCommand extends Command {
                 // spawn a new boss of that type
                 try {
                     Boss boss = BossFactory.create(BossType.valueOf(args[0].toUpperCase()));
-                    player.sendPlainMessage("Spawning a " + boss.getConfig().getName() + ".");
+                    player.sendPlainMessage("&bSpawning a " + boss.getConfig().getName() + ".");
                     boss.spawn(player.getLocation(), player);
                 } catch (IllegalArgumentException e) {
                     player.sendPlainMessage("Invalid Name!");

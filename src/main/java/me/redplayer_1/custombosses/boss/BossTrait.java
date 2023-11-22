@@ -17,6 +17,7 @@ import java.util.UUID;
 
 @TraitName("custombosstrait")
 public class BossTrait extends Trait {
+    boolean spawned = false;
     Boss parentBoss;
     UUID bukkitUUID;
     DecimalFormat healthFormat = new DecimalFormat("0.00");
@@ -24,13 +25,15 @@ public class BossTrait extends Trait {
 
     protected BossTrait(Boss parentBoss) {
         super("custombosstrait");
+        System.out.println("CONSTRUCTOR CALLED");
         this.parentBoss = parentBoss;
     }
 
-    @Deprecated(forRemoval = false)
+    @Deprecated()
     public BossTrait() {
         // never use this constructor as it only exists for compatibility with Citizens
         super("custombosstrait");
+        System.out.println("CITIZENS CONSTRUCTOR CALLED");
         parentBoss = null;
     }
 
@@ -41,7 +44,10 @@ public class BossTrait extends Trait {
             getNPC().destroy();
             return;
         }
-
+        if (!spawned) {
+            onSpawn();
+            spawned = true;
+        }
         // choose a player to target (must be within range)
         closestPlayer = LocationUtils.getClosestPlayer(getNPC().getStoredLocation(), true, parentBoss.getConfig().getAttackRange());
 
@@ -57,24 +63,30 @@ public class BossTrait extends Trait {
 
     @Override
     public void onSpawn() {
+        System.out.println("SPAWN W NULL?");
         if (parentBoss == null) {
             return;
         }
+        System.out.println("SPAWN CALLED");
         //store the boss's uuid in its entity's metadata
         bukkitUUID = getNPC().getEntity().getUniqueId();
         getNPC().getEntity().setMetadata(Boss.UUID_METADATA_KEY, new FixedMetadataValue(CustomBosses.getInstance(), parentBoss.getEntity().getUniqueId().toString()));
 
         // create a task to use the boss's abilities every so often
         if (!parentBoss.getAbilities().isEmpty()) {
+            System.out.println("REGISTER TASK");
             getNPC().getEntity().getScheduler().runAtFixedRate(CustomBosses.getInstance(),
                     scheduledTask -> {
+                        System.out.println("BKT TASK CALLED");
                         if (!parentBoss.getEntity().isSpawned()) {
+                            System.out.println("Cancel task");
                             scheduledTask.cancel();
                             return;
                         }
                         try {
                             parentBoss.useAbility();
                         } catch (NullPointerException e) {
+                            System.out.println("task NPE");
                             scheduledTask.cancel();
                         }
                     },

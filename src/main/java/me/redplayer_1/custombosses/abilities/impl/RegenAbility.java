@@ -10,7 +10,7 @@ import org.bukkit.potion.PotionEffectType;
 public class RegenAbility extends BossAbility {
 
     public RegenAbility() {
-        super("<gradient:red:dark_red>Regen</gradient>", true, 0.4);
+        super("<gradient:red:dark_red>Regen</gradient>", true, 0.85);
     }
 
     @Override

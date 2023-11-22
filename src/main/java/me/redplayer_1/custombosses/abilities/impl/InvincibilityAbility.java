@@ -30,7 +30,7 @@ public class InvincibilityAbility extends BossAbility {
     }
 
     public InvincibilityAbility() {
-        super("<dark_green>Invincibility", true, 0.4/* 0.4 */);
+        super("<dark_green>Invincibility", true, 0.7);
     }
 
     @Override
