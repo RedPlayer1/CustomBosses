@@ -17,11 +17,6 @@ public class TestBoss extends Boss {
     }
 
     @Override
-    public Boss copy() {
-        return new TestBoss();
-    }
-
-    @Override
     public void onPreSpawn(Location spawnLocation) {
         spawnLocation.getWorld().playEffect(spawnLocation, Effect.ELECTRIC_SPARK, null);
         spawnLocation.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, spawnLocation, 20, 0, 1, 0);
@@ -30,14 +25,14 @@ public class TestBoss extends Boss {
     @Override
     public void onSpawn() {
         // boss is a zombie, so we disable fire damage for it
-        ((LivingEntity) getEntity().getEntity()).addPotionEffect(
+        ((LivingEntity) getMob().getEntity()).addPotionEffect(
                 new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION, 1, false, false)
         );
     }
 
     @Override
     public void onKill(@Nullable LivingEntity killer) {
-        Location loc = getEntity().getStoredLocation();
+        Location loc = getLocation();
         loc.getWorld().spawnParticle(Particle.HEART, loc, 10);
     }
 }

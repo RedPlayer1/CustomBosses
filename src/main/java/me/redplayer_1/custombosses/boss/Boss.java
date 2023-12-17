@@ -5,11 +5,10 @@ import me.redplayer_1.custombosses.abilities.BossAbility;
 import me.redplayer_1.custombosses.abilities.CooldownBossAbility;
 import me.redplayer_1.custombosses.api.PlayerStats;
 import me.redplayer_1.custombosses.config.providers.BossConfig;
+import me.redplayer_1.custombosses.entity.Mob;
 import me.redplayer_1.custombosses.util.LocationUtils;
 import me.redplayer_1.custombosses.util.MessageUtils;
 import me.redplayer_1.custombosses.util.SyntaxParser;
-import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -18,7 +17,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Nullable;
@@ -32,18 +30,15 @@ public abstract class Boss {
     private final DecimalFormat healthFormat = new DecimalFormat("0.00");
     private final SyntaxParser msgParser = new SyntaxParser(new String[]{"{player}", "{boss}"});
     public static final String UUID_METADATA_KEY = "boss_uuid";
-    private NPC entity;
-    private final List<BossAbility> abilities;
-    private final UUID uuid;
+    private Mob entity;
+    private List<BossAbility> abilities;
     private final BossConfig config;
 
     public Boss(BossConfig config, BossAbility... abilities) {
-        uuid = UUID.randomUUID();
+        //uuid = UUID.randomUUID();
         this.config = config;
         this.abilities = Arrays.stream(abilities).toList();
     }
-
-    public abstract Boss copy();
 
     public void addAbility(BossAbility ability) {
         abilities.add(ability);
@@ -56,16 +51,10 @@ public abstract class Boss {
      * @param loc the location to spawn the boss
      */
     public final void spawn(Location loc, @Nullable Entity spawner) {
-        entity = CitizensAPI.getNPCRegistry().createNPC(EntityType.valueOf(config.getEntityType()), config.getName());
-        entity.addTrait(new BossTrait(this));
-        entity.setProtected(false);
         onPreSpawn(loc);
-        entity.spawn(loc);
-        entity.getEntity().setInvulnerable(false);
-
+        entity = new Mob(config.getName(), EntityType.valueOf(config.getEntityType()), loc, config.getHealth(), 4, true);
         registerBoss(this);
-        // put the NPC's uuid in the boss entity's metadata (this uuid is also used as a key for the registry)
-        entity.getEntity().setMetadata(UUID_METADATA_KEY, new FixedMetadataValue(CustomBosses.getInstance(), entity.getUniqueId().toString()));
+
         if (spawner != null) {
             PlayerStats stats = PlayerStats.getRegistry().get(spawner.getUniqueId());
             if (stats != null) {
@@ -91,9 +80,8 @@ public abstract class Boss {
      * Despawns the boss. This will instantly destroy the boss and its related data.
      */
     public final void despawn() {
-        if (entity.isSpawned()) {
-            ((LivingEntity) entity.getEntity()).setHealth(0);
-            entity.despawn();
+        if (!entity.isDead()) {
+            entity.kill();
         }
         unregisterBoss(this);
     }
@@ -139,7 +127,7 @@ public abstract class Boss {
                 ((LivingEntity) entity.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2, 255, false, false));
                 if (!ability.isSingleTarget()) {
                     // use ability on all players in range
-                    for (Player p : entity.getStoredLocation().getNearbyPlayers(config.getAttackRange(), player -> player.getGameMode() == GameMode.SURVIVAL)) {
+                    for (Player p : entity.getLocation().getNearbyPlayers(config.getAttackRange(), player -> player.getGameMode() == GameMode.SURVIVAL)) {
                         ability.use(this, p);
                         p.sendActionBar(
                                 MessageUtils.miniMessageToComponent(String.format(BossAbility.USAGE_MESSAGE, config.getName(), ability.getName()))
@@ -147,7 +135,7 @@ public abstract class Boss {
                     }
                 } else {
                     // use ability on closest player (in range)
-                    Player player = LocationUtils.getClosestPlayer(entity.getStoredLocation(), true, config.getAttackRange());
+                    Player player = LocationUtils.getClosestPlayer(entity.getLocation(), true, config.getAttackRange());
                     if (player == null) return;
 
                     ability.use(this, player);
@@ -172,12 +160,11 @@ public abstract class Boss {
     public abstract void onKill(@Nullable LivingEntity killer);
 
     public static void registerBoss(Boss boss) {
-        registry.put(boss.entity.getUniqueId(), boss);
+        registry.put(boss.entity.getUuid(), boss);
     }
 
     public static void unregisterBoss(Boss boss) {
-        registry.remove(boss.entity.getUniqueId());
-        boss.entity.destroy();
+        registry.remove(boss.entity.getUuid());
     }
 
     public static @Nullable Boss getBoss(UUID uuid) {
@@ -188,21 +175,17 @@ public abstract class Boss {
         return registry;
     }
 
-    public UUID getUuid() {
-        return uuid;
-    }
-
     public BossConfig getConfig() {
         return config;
     }
 
-    public NPC getEntity() {
+    public Mob getMob() {
         return entity;
     }
 
     public @Nullable Location getLocation() {
-        if (entity.isSpawned()) return entity.getStoredLocation();
-        return null;
+        if (entity.isDead()) return null;
+        return entity.getLocation();
     }
 
     public List<BossAbility> getAbilities() {
@@ -217,11 +200,15 @@ public abstract class Boss {
     }
 
     public static boolean isBoss(Entity entity) {
-        return entity.hasMetadata("NPC") && entity.hasMetadata(UUID_METADATA_KEY);
+        return of(entity) != null;
     }
 
     public static @Nullable Boss of(Entity entity) {
-        if (!isBoss(entity)) return null;
-        return registry.get(UUID.fromString(entity.getMetadata(UUID_METADATA_KEY).get(0).asString()));
+        if (!(entity instanceof LivingEntity)) return null;
+        Mob mob = Mob.fromBukkit((LivingEntity) entity);
+        if (mob != null && registry.containsKey(mob.getUuid())) {
+            return registry.get(mob.getUuid());
+        }
+        return null;
     }
 }

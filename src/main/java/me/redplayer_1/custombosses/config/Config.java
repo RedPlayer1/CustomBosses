@@ -49,6 +49,7 @@ public class Config {
 
     /**
      * Attempts to save the FileConfiguration to disk
+     *
      * @return whether the file was saved successfully
      */
     public boolean save() {

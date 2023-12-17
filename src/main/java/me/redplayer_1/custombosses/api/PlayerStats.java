@@ -16,13 +16,13 @@ import java.util.UUID;
 
 public class PlayerStats {
     private static Config globalConfig;
-    private static HashMap<UUID, PlayerStats> registry = new HashMap<>();
-    private static ConfigMap<BossType, Integer> globalKills = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);
-    private static ConfigMap<BossType, Integer> globalSpawns = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);
+    private static final HashMap<UUID, PlayerStats> registry = new HashMap<>();
+    private static final ConfigMap<BossType, Integer> globalKills = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);
+    private static final ConfigMap<BossType, Integer> globalSpawns = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);
     private Config data;
-    private UUID uuid;
-    private ConfigMap<BossType, Integer> bossKills = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);;
-    private ConfigMap<BossType, Integer> bossSpawns = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);;
+    private final UUID uuid;
+    private final ConfigMap<BossType, Integer> bossKills = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);
+    private final ConfigMap<BossType, Integer> bossSpawns = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);
 
     static {
         // get global info from file
@@ -54,6 +54,7 @@ public class PlayerStats {
 
     /**
      * Increments the spawn counter for this type
+     *
      * @param type the type of boss spawned
      */
     public void incrementSpawn(BossType type) {
@@ -73,6 +74,7 @@ public class PlayerStats {
 
     /**
      * Increments the kill counter for this type
+     *
      * @param type the type of boss killed
      */
     public void incrementKill(BossType type) {
@@ -92,6 +94,7 @@ public class PlayerStats {
 
     /**
      * Attempt to save stats to disk
+     *
      * @param remove whether this instance should be removed from the registry (only use on player logouts)
      */
     public void save(boolean remove) {
@@ -106,6 +109,7 @@ public class PlayerStats {
 
     /**
      * Saves all the player stats in the registry
+     *
      * @param removeFromRegistry whether the registry should be cleared afterward
      */
     public static void saveAllPlayers(boolean removeFromRegistry) {
@@ -123,6 +127,7 @@ public class PlayerStats {
     /**
      * Similar to creating a new PlayerStats object, except a file isn't created if the player never joined
      * the server
+     *
      * @param uuid the uuid of the player
      * @return the player's stats, or null if there are none.
      */

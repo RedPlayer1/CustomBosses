@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 public class BossFactory {
     /**
      * Create a new {@link Boss} of that type
+     *
      * @param type the type of boss
      * @return a new instance of that boss
      */

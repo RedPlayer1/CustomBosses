@@ -20,7 +20,7 @@ public class RegenAbility extends BossAbility {
 
     @Override
     public boolean use(Boss boss, Player target) {
-        ((LivingEntity) boss.getEntity().getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 4, 3, true, true));
+        ((LivingEntity) boss.getMob().getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 4, 3, true, true));
         return true;
     }
 }

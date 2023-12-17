@@ -89,6 +89,7 @@ public class DamageListener implements Listener {
 
     /**
      * Removed this uuid from memory to help prevent huge RAM usage
+     *
      * @param damagedUUID uuid of damager to remove
      */
     public static void removeLastDamager(UUID damagedUUID) {

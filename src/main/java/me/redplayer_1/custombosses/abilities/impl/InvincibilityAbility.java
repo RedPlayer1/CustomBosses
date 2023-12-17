@@ -47,10 +47,10 @@ public class InvincibilityAbility extends BossAbility {
 
         invincibleBosses.add(boss);
         // add slowness to make the particles look better
-        ((LivingEntity) boss.getEntity().getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, TICK_DURATION * 20, 10, false, false));
+        ((LivingEntity) boss.getMob().getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, TICK_DURATION * 20, 10, false, false));
 
         Bukkit.getScheduler().runTaskTimer(CustomBosses.getInstance(), task -> {
-            if (tickCount.get() > TICK_DURATION || !boss.getEntity().isSpawned()) {
+            if (tickCount.get() > TICK_DURATION || boss.getMob().isDead()) {
                 invincibleBosses.remove(boss);
                 task.cancel();
                 return;
@@ -60,7 +60,7 @@ public class InvincibilityAbility extends BossAbility {
             for (double y = 0; y < 3; y += 0.5) {
                 double x = RADIUS * Math.cos(tickCount.get() + y);
                 double z = RADIUS * Math.sin(tickCount.get() + y);
-                loc.getWorld().spawnParticle(Particle.REDSTONE, loc.x() + x, loc.y() + y, loc.z() + z,5, dustOptions);
+                loc.getWorld().spawnParticle(Particle.REDSTONE, loc.x() + x, loc.y() + y, loc.z() + z, 5, dustOptions);
                 loc.getWorld().spawnParticle(Particle.REDSTONE, -1 * x + loc.x(), loc.y() + y, -1 * z + loc.z(), 5, dustOptions);
             }
 

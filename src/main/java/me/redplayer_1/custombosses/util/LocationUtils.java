@@ -1,26 +1,11 @@
 package me.redplayer_1.custombosses.util;
 
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 public class LocationUtils {
-    /**
-     * Converts a distance in blocks to a distance as a double that is equivalent to
-     * the result of Location#distanceSquared()
-     *
-     * @param blockDistance the distance in blocks
-     * @return the resulting distance
-     */
-    public static double blockDistToDistSq(double blockDistance) {
-        World world = Bukkit.getWorlds().get(0);
-        Location base = new Location(world, 0, 0, 0);
-        return base.distanceSquared(base.add(blockDistance, blockDistance, blockDistance));
-    }
-
     /**
      * Gets the closest player to that location
      *

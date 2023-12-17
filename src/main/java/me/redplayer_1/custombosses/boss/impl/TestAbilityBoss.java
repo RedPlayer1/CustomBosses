@@ -16,11 +16,6 @@ public class TestAbilityBoss extends Boss {
     }
 
     @Override
-    public Boss copy() {
-        return new TestAbilityBoss();
-    }
-
-    @Override
     public void onKill(@Nullable LivingEntity killer) {
         if (killer != null) {
             killer.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 5, 5));
@@ -34,6 +29,6 @@ public class TestAbilityBoss extends Boss {
     @Override
     public void onSpawn() {
         // give the boss fire resistance to stop damage from lightning ability
-        ((LivingEntity) getEntity().getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION, 1, false, false));
+        getMob().getEntity().addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION, 1, false, false));
     }
 }

@@ -26,7 +26,7 @@ public class FireRingAbility extends BossAbility {
         int radius = 5;
 
         // spawn a ring of fire around the boss
-        for (int degree = 0; degree < 360; degree ++) {
+        for (int degree = 0; degree < 360; degree++) {
             double radians = Math.toRadians(degree);
             double x = Math.cos(radians) * radius;
             double z = Math.sin(radians) * radius;
