@@ -4,15 +4,12 @@ import com.destroystokyo.paper.entity.ai.Goal;
 import com.destroystokyo.paper.entity.ai.GoalKey;
 import com.destroystokyo.paper.entity.ai.GoalType;
 import me.redplayer_1.custombosses.CustomBosses;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
@@ -21,19 +18,21 @@ public class TargetEntityGoal implements Goal<Mob> {
     public static final GoalKey<Mob> KEY = GoalKey.of(Mob.class, new NamespacedKey(CustomBosses.getInstance(), "target_entity_goal"));
     private final Mob parent;
     private LivingEntity target;
-    private double attackRange;
+    private double attackRange; // will attack entities in range
+    private double targetRange; // will target entities in range
     private final boolean defaultHostile; // if the entity type attacks players by default
     private boolean hostile;
 
-    public TargetEntityGoal(Mob parent, double attackRange, boolean hostile) {
+    public TargetEntityGoal(Mob parent, double attackRange, double targetRange, boolean hostile) {
         this.parent = parent;
         this.attackRange = attackRange;
+        this.targetRange = targetRange;
         defaultHostile = parent instanceof Monster;
         this.hostile = hostile;
     }
 
-    public TargetEntityGoal(Mob parent, double attackRange, boolean hostile, LivingEntity target) {
-        this(parent, attackRange, hostile);
+    public TargetEntityGoal(Mob parent, double attackRange, double targetRange, boolean hostile, LivingEntity target) {
+        this(parent, attackRange, targetRange, hostile);
         this.target = target;
     }
 
@@ -56,20 +55,11 @@ public class TargetEntityGoal implements Goal<Mob> {
     }
 
     @Override
-    public void start() {
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
     public void tick() {
         if (!hostile) return;
         if (target == null || !isValidTarget(target)) {
             // target nearest entity
-            LivingEntity entity = parent.getLocation().getNearbyLivingEntities(attackRange).stream().toList().get(0);
+            LivingEntity entity = parent.getLocation().getNearbyLivingEntities(targetRange).stream().toList().get(0);
             if (entity != null && !entity.equals(parent)) {
                 parent.setTarget(entity);
             }
