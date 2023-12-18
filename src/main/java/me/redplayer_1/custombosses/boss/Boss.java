@@ -55,6 +55,7 @@ public abstract class Boss {
         entity = new Mob(config.getName(), EntityType.valueOf(config.getEntityType()), loc, config.getHealth(), 4, true);
         registerBoss(this);
 
+        // stat increment
         if (spawner != null) {
             PlayerStats stats = PlayerStats.getRegistry().get(spawner.getUniqueId());
             if (stats != null) {
@@ -62,6 +63,15 @@ public abstract class Boss {
             }
         }
         onSpawn();
+
+        // ability task
+        Bukkit.getScheduler().runTaskTimer(CustomBosses.getInstance(), task -> {
+            if (entity.isDead()) {
+                task.cancel();
+            } else {
+                useAbility();
+            }
+        }, 5, BossAbility.DEFAULT_USAGE_DELAY);
 
         // announce spawn
         FileConfiguration settings = CustomBosses.getInstance().getSettings().getConfig();
@@ -77,7 +87,7 @@ public abstract class Boss {
     }
 
     /**
-     * Despawns the boss. This will instantly destroy the boss and its related data.
+     * Despawns the boss. This will destroy the boss and its related data.
      */
     public final void despawn() {
         if (!entity.isDead()) {
@@ -87,8 +97,7 @@ public abstract class Boss {
     }
 
     /**
-     * Kills and automatically despawn the boss. Called right before the boss is killed
-     *
+     * Kills and automatically {@link Boss#despawn() despawns} the boss.
      * @param killer the entity who killed the boss
      */
     public final void kill(@Nullable LivingEntity killer) {
@@ -124,7 +133,7 @@ public abstract class Boss {
                     return;
                 }
                 // give resistance so the boss won't kill itself
-                ((LivingEntity) entity.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2, 255, false, false));
+                entity.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2, 255, false, false));
                 if (!ability.isSingleTarget()) {
                     // use ability on all players in range
                     for (Player p : entity.getLocation().getNearbyPlayers(config.getAttackRange(), player -> player.getGameMode() == GameMode.SURVIVAL)) {
@@ -148,14 +157,20 @@ public abstract class Boss {
         }
     }
 
+    /**
+     * Called before the Boss is spawned. The entity representing the Boss doesn't exist yet.
+     * @param spawnLocation the location that the Boss will spawn
+     */
     public abstract void onPreSpawn(Location spawnLocation);
 
+    /**
+     * Called after the Boss is spawned. The entity representing this Boss will not be null.
+     */
     public abstract void onSpawn();
 
     /**
      * Fired when the boss is killed by an entity.
-     *
-     * @param killer the entity who killed the boss
+     * @param killer the entity that killed the boss
      */
     public abstract void onKill(@Nullable LivingEntity killer);
 
@@ -183,6 +198,9 @@ public abstract class Boss {
         return entity;
     }
 
+    /**
+     * @return the location of the entity that represents the Boss
+     */
     public @Nullable Location getLocation() {
         if (entity.isDead()) return null;
         return entity.getLocation();
@@ -192,6 +210,7 @@ public abstract class Boss {
         return abilities;
     }
 
+    // TODO: remove
     public String getFormattedName(double health) {
         String result = CustomBosses.getInstance().getSettings().getConfig().getString("Boss.nameFormat");
         return MessageUtils.replacePlaceholders(
