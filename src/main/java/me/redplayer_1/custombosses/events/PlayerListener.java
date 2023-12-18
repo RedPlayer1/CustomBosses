@@ -16,6 +16,9 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
         // save player's stats
-        PlayerStats.getRegistry().get(event.getPlayer().getUniqueId()).save(true);
+        PlayerStats stats = PlayerStats.getRegistry().get(event.getPlayer().getUniqueId());
+        if (stats != null) {
+            stats.save(true);
+        }
     }
 }
