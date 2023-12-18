@@ -28,7 +28,7 @@ public class MinionAbility extends CooldownBossAbility {
         if (loc == null) return false;
 
         for (int i = 0; i < 5; i++) {
-            // give the minions fire resistance so they don't burn during the day
+            // give the minions fire resistance, so they don't burn during the day
             LivingEntity entity = (LivingEntity) loc.getWorld().spawnEntity(loc, EntityType.ZOMBIE);
             entity.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION, 1, false, false));
             entity.customName(MessageUtils.miniMessageToComponent(getName()));

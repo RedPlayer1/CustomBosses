@@ -19,23 +19,20 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.DecimalFormat;
 import java.util.*;
 
 public abstract class Boss {
     private static final Random random = new Random();
     private static final HashMap<UUID, Boss> registry = new HashMap<>();
-    private final DecimalFormat healthFormat = new DecimalFormat("0.00");
     private final SyntaxParser msgParser = new SyntaxParser(new String[]{"{player}", "{boss}"});
-    public static final String UUID_METADATA_KEY = "boss_uuid";
     private Mob entity;
     private List<BossAbility> abilities;
     private final BossConfig config;
 
     public Boss(BossConfig config, BossAbility... abilities) {
-        //uuid = UUID.randomUUID();
         this.config = config;
         this.abilities = Arrays.stream(abilities).toList();
     }
@@ -88,10 +85,11 @@ public abstract class Boss {
 
     /**
      * Despawns the boss. This will destroy the boss and its related data.
+     * @see Boss#kill(LivingEntity)
      */
     public final void despawn() {
         if (!entity.isDead()) {
-            entity.kill();
+            entity.kill(true);
         }
         unregisterBoss(this);
     }
@@ -119,7 +117,7 @@ public abstract class Boss {
                 stats.incrementKill(BossFactory.typeOf(this));
             }
         }
-        onKill(killer);
+        onKill(entity.getLocation(), killer);
         despawn();
     }
 
@@ -169,10 +167,11 @@ public abstract class Boss {
     public abstract void onSpawn();
 
     /**
-     * Fired when the boss is killed by an entity.
-     * @param killer the entity that killed the boss
+     * Fired when the Boss is killed. The entity corresponding to this Boss will be null.
+     * @param location the location of the Boss when it was killed
+     * @param killer the entity that killed the Boss
      */
-    public abstract void onKill(@Nullable LivingEntity killer);
+    public abstract void onKill(@NotNull Location location, @Nullable LivingEntity killer);
 
     public static void registerBoss(Boss boss) {
         registry.put(boss.entity.getUuid(), boss);
@@ -182,6 +181,9 @@ public abstract class Boss {
         registry.remove(boss.entity.getUuid());
     }
 
+    /**
+     * @param uuid the UUID of the {@link Mob} that represents this Boss
+     */
     public static @Nullable Boss getBoss(UUID uuid) {
         return registry.get(uuid);
     }
@@ -210,16 +212,18 @@ public abstract class Boss {
         return abilities;
     }
 
-    // TODO: remove
-    public String getFormattedName(double health) {
-        String result = CustomBosses.getInstance().getSettings().getConfig().getString("Boss.nameFormat");
-        return MessageUtils.replacePlaceholders(
-                new String[]{"{name}", "{health}"}, new Object[]{config.getName(), healthFormat.format(health)},
-                result);
-    }
-
+    /**
+     * @return if the Entity is a Boss
+     */
     public static boolean isBoss(Entity entity) {
         return of(entity) != null;
+    }
+
+    /**
+     * @return if the Mob is a Boss
+     */
+    public static boolean isBoss(Mob mob) {
+        return registry.containsKey(mob.getUuid());
     }
 
     public static @Nullable Boss of(Entity entity) {
@@ -230,4 +234,9 @@ public abstract class Boss {
         }
         return null;
     }
+
+    public static @Nullable Boss of(Mob mob) {
+        return registry.get(mob.getUuid());
+    }
 }
+

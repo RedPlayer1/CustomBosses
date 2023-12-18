@@ -2,6 +2,7 @@ package me.redplayer_1.custombosses.events;
 
 import me.redplayer_1.custombosses.CustomBosses;
 import me.redplayer_1.custombosses.boss.Boss;
+import me.redplayer_1.custombosses.entity.Mob;
 import me.redplayer_1.custombosses.util.MessageUtils;
 import me.redplayer_1.custombosses.util.SyntaxParser;
 import org.bukkit.Bukkit;
@@ -20,7 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class DamageListener implements Listener {
-    private static final int LAST_DAMAGE_LIFETIME = 30000; // 30 seconds (in ticks)
+    private static final int LAST_DAMAGE_LIFETIME = 30_000; // 30 seconds (in ticks)
     private final SyntaxParser deathMsgParser = new SyntaxParser(new String[]{"{player}", "{boss}"}, new String[0]);
 
     // damaged uuid to damager
@@ -47,9 +48,9 @@ public class DamageListener implements Listener {
         if (event.getEntity() instanceof Player player && event.getDamager() instanceof LivingEntity damager) {
             // player damaged by boss
             lastDamagers.put(player.getUniqueId(), new TimedPlayerDamager(damager, System.currentTimeMillis()));
-        } else if (event.getEntity() instanceof LivingEntity boss && Boss.isBoss(boss) && event.getDamager() instanceof LivingEntity damager) {
-            // boss is damaged by entity
-            lastDamagers.put(boss.getUniqueId(), new TimedPlayerDamager(damager, System.currentTimeMillis()));
+        } else if (event.getEntity() instanceof LivingEntity mob && Mob.isMob(mob) && event.getDamager() instanceof LivingEntity damager) {
+            // Mob is damaged by entity
+            lastDamagers.put(Mob.fromBukkit(mob).getUuid(), new TimedPlayerDamager(damager, System.currentTimeMillis()));
         }
     }
 
@@ -64,15 +65,13 @@ public class DamageListener implements Listener {
         if (killer == null) return;
 
         // alter the kill message if it's a boss
-        if (Boss.isBoss(killer)) {
+        Boss boss = Boss.of(killer);
+        if (boss != null) {
             // get the uuid from the boss's metadata
-            Boss boss = Boss.getBoss(UUID.fromString(killer.getMetadata(Boss.UUID_METADATA_KEY).get(0).asString()));
-            if (boss != null) {
-                event.deathMessage(MessageUtils.miniMessageToComponent(
-                        deathMsgParser.parse(CustomBosses.getInstance().getSettings().getConfig().getString("Boss.playerDeathMessage", ""),
-                                killed.getName(), boss.getConfig().getName())
-                ));
-            }
+            event.deathMessage(MessageUtils.miniMessageToComponent(
+                    deathMsgParser.parse(CustomBosses.getInstance().getSettings().getConfig().getString("Boss.playerDeathMessage", ""),
+                            killed.getName(), boss.getConfig().getName())
+            ));
         }
     }
 

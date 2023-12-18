@@ -9,6 +9,7 @@ import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TestBoss extends Boss {
@@ -25,14 +26,13 @@ public class TestBoss extends Boss {
     @Override
     public void onSpawn() {
         // boss is a zombie, so we disable fire damage for it
-        ((LivingEntity) getMob().getEntity()).addPotionEffect(
+        getMob().getEntity().addPotionEffect(
                 new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION, 1, false, false)
         );
     }
 
     @Override
-    public void onKill(@Nullable LivingEntity killer) {
-        Location loc = getLocation();
-        loc.getWorld().spawnParticle(Particle.HEART, loc, 10);
+    public void onKill(@NotNull Location location, @Nullable LivingEntity killer) {
+        location.getWorld().spawnParticle(Particle.HEART, location, 10);
     }
 }

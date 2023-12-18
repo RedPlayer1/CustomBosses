@@ -1,0 +1,52 @@
+package me.redplayer_1.custombosses.entity;
+
+import org.bukkit.entity.Entity;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+public class MobDeathEvent extends Event implements Cancellable {
+    private static final HandlerList HANDLER_LIST = new HandlerList();
+    private boolean cancelled = false;
+    private Mob killed;
+    private Entity killer;
+
+    /**
+     * Fired when a {@link Mob} is killed.
+     * @param killed the killed Mob
+     * @param killer the entity that killed it
+     */
+    public MobDeathEvent(@NotNull Mob killed, @Nullable Entity killer) {
+        this.killed = killed;
+        this.killer = killer;
+    }
+
+    public static HandlerList getHandlerList() {
+        return HANDLER_LIST;
+    }
+
+    @Override
+    public @NotNull HandlerList getHandlers() {
+        return HANDLER_LIST;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean cancel) {
+        cancelled = cancel;
+    }
+
+    public Mob getKilled() {
+        return killed;
+    }
+
+    public Entity getKiller() {
+        return killer;
+    }
+}

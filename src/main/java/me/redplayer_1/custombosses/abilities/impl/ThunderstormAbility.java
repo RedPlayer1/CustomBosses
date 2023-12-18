@@ -17,6 +17,7 @@ public class ThunderstormAbility extends BossAbility {
 
     @Override
     public boolean use(Boss boss, Player target) {
+        boss.getMob().setInvincible(true, 15); // lightning shouldn't damage boss
         target.getLocation().getWorld().strikeLightning(target.getLocation());
         return true;
     }

@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TestAbilityBoss extends Boss {
@@ -16,7 +17,7 @@ public class TestAbilityBoss extends Boss {
     }
 
     @Override
-    public void onKill(@Nullable LivingEntity killer) {
+    public void onKill(@NotNull Location location, @Nullable LivingEntity killer) {
         if (killer != null) {
             killer.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 5, 5));
         }

@@ -1,0 +1,24 @@
+package me.redplayer_1.custombosses.events;
+
+import me.redplayer_1.custombosses.boss.Boss;
+import me.redplayer_1.custombosses.entity.MobDeathEvent;
+import net.kyori.adventure.text.Component;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+
+public class BossListener implements Listener {
+    @EventHandler
+    public void onMobDeath(MobDeathEvent event) {
+        Boss boss = Boss.of(event.getKilled());
+        if (boss != null) {
+            try {
+                boss.kill((LivingEntity) event.getKiller());
+            } catch (ClassCastException ex) {
+                boss.kill(null);
+            }
+
+        }
+    }
+}

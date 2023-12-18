@@ -4,6 +4,7 @@ import me.redplayer_1.custombosses.api.PlayerStats;
 import me.redplayer_1.custombosses.boss.Boss;
 import me.redplayer_1.custombosses.command.BossCommand;
 import me.redplayer_1.custombosses.config.Config;
+import me.redplayer_1.custombosses.events.BossListener;
 import me.redplayer_1.custombosses.events.DamageListener;
 import me.redplayer_1.custombosses.events.PlayerListener;
 import org.bukkit.Bukkit;
@@ -45,6 +46,7 @@ public final class CustomBosses extends JavaPlugin {
         // Listeners
         getServer().getPluginManager().registerEvents(new DamageListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new BossListener(), this);
 
         // Commands
         Bukkit.getCommandMap().register("custombosses", new BossCommand());
@@ -54,10 +56,12 @@ public final class CustomBosses extends JavaPlugin {
     public void onDisable() {
         // Bosses shouldn't persist shutdowns
         getLogger().info("Removing all spawned bosses. . .");
+
         List<Boss> despawnQueue = Boss.getRegistry().values().stream().toList();
         for (Boss boss : despawnQueue) {
             boss.despawn();
         }
+
         // save stats
         PlayerStats.saveAllPlayers(true);
         PlayerStats.saveGlobal();
