@@ -11,6 +11,7 @@ import org.bukkit.entity.Mob;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
@@ -18,20 +19,20 @@ public class TargetEntityGoal implements Goal<Mob> {
     public static final GoalKey<Mob> KEY = GoalKey.of(Mob.class, new NamespacedKey(CustomBosses.getInstance(), "target_entity_goal"));
     private final Mob parent;
     private LivingEntity target;
-    private double attackRange; // will attack entities in range
-    private double targetRange; // will target entities in range
+    private double attackRange; // will attack entities in range (blocks^2)
+    private double targetRange = 600d; // will target entities in range (blocks^2)
     private final boolean defaultHostile; // if the entity type attacks players by default
     private boolean hostile;
 
-    public TargetEntityGoal(Mob parent, double attackRange, double targetRange, boolean hostile) {
+    public TargetEntityGoal(Mob parent, double attackRange, @Nullable Double targetRange, boolean hostile) {
         this.parent = parent;
         this.attackRange = attackRange;
-        this.targetRange = targetRange;
+        if (targetRange != null) this.targetRange = targetRange;
         defaultHostile = parent instanceof Monster;
         this.hostile = hostile;
     }
 
-    public TargetEntityGoal(Mob parent, double attackRange, double targetRange, boolean hostile, LivingEntity target) {
+    public TargetEntityGoal(Mob parent, double attackRange, @Nullable Double targetRange, boolean hostile, LivingEntity target) {
         this(parent, attackRange, targetRange, hostile);
         this.target = target;
     }
@@ -54,13 +55,14 @@ public class TargetEntityGoal implements Goal<Mob> {
         return shouldActivate();
     }
 
-    @Override
+     @Override
     public void tick() {
         if (!hostile) return;
         if (target == null || !isValidTarget(target)) {
             // target nearest entity
             LivingEntity entity = parent.getLocation().getNearbyLivingEntities(targetRange).stream().toList().get(0);
             if (entity != null && !entity.equals(parent)) {
+                target = entity;
                 parent.setTarget(entity);
             }
         }

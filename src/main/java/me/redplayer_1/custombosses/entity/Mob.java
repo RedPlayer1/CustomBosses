@@ -29,12 +29,12 @@ public class Mob implements Listener {
     // incoming damage is multiplied by this. Affected by custom armor & weapons (+ enchants)
     private double damageScalar = 1.0;
 
-    private LivingEntity entity;
+    private final LivingEntity entity;
     private boolean invincible;
     private final double maxHealth;
     private double health; // the actual health of this mob
 
-    private Hologram hologram; // line 0 is the name, line 1 is the health
+    private final Hologram hologram; // line 0 is the name, line 1 is the health
 
     /**
      * Create a new {@link Mob} that is automatically spawned.
@@ -46,7 +46,7 @@ public class Mob implements Listener {
      * @param hostile whether the Mob should attack other entities
      * @param invincible if the Mob should take damage
      */
-    public Mob(String name, EntityType type, Location location, double maxHealth, int attackRange, boolean hostile, boolean invincible) {
+    public Mob(String name, EntityType type, Location location, double maxHealth, double attackRange, boolean hostile, boolean invincible) {
         this(name, type, location, maxHealth, attackRange, hostile);
         this.invincible = invincible;
     }
@@ -60,12 +60,12 @@ public class Mob implements Listener {
      * @param attackRange how far away entities can be attacked form (distance in blocks ^ 2)
      * @param hostile whether the Mob should attack other entities
      */
-    public Mob(String name, EntityType type, Location location, double maxHealth, int attackRange, boolean hostile) {
+    public Mob(String name, EntityType type, Location location, double maxHealth, double attackRange, boolean hostile) {
         // ensure entity is a living one
         if (location.getWorld().spawnEntity(location, type) instanceof LivingEntity le) {
             entity = le;
             entity.setMetadata(METADATA_KEY, new FixedMetadataValue(CustomBosses.getInstance(), uuid));
-            Bukkit.getMobGoals().addGoal((org.bukkit.entity.Mob) entity, 0, new TargetEntityGoal((org.bukkit.entity.Mob) entity, attackRange, hostile));
+            Bukkit.getMobGoals().addGoal((org.bukkit.entity.Mob) entity, 0, new TargetEntityGoal((org.bukkit.entity.Mob) entity, attackRange, null, hostile));
 
         } else {
             throw new RuntimeException("The Mob {name} must be a type of LivingEntity! (not " + type.name() + ")");
