@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TestBoss extends Boss {
     public TestBoss() {
-        super(new BossConfig("ZOMBIE", "Test Boss", 20, 15), new InvincibilityAbility());
+        super(new BossConfig("ZOMBIE", "Test Boss", 50, 15), new InvincibilityAbility());
     }
 
     @Override

@@ -9,6 +9,7 @@ import me.redplayer_1.custombosses.entity.Mob;
 import me.redplayer_1.custombosses.util.LocationUtils;
 import me.redplayer_1.custombosses.util.MessageUtils;
 import me.redplayer_1.custombosses.util.SyntaxParser;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -17,8 +18,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,7 +48,7 @@ public abstract class Boss {
      */
     public final void spawn(Location loc, @Nullable Entity spawner) {
         onPreSpawn(loc);
-        entity = new Mob(config.getName(), EntityType.valueOf(config.getEntityType()), loc, config.getHealth(), 4, true);
+        entity = new Mob(config.getName(), EntityType.valueOf(config.getEntityType()), loc, config.getHealth(), true, 4, true);
         registerBoss(this);
 
         // stat increment
@@ -79,7 +78,7 @@ public abstract class Boss {
             } else {
                 broadcastMsg = msgParser.parse(settings.getString("Boss.spawnBroadcastMessageAnonymous"), null, config.getName());
             }
-            Bukkit.broadcast(MessageUtils.miniMessageToComponent(broadcastMsg));
+            Bukkit.broadcast(MessageUtils.mmsgToComponent(broadcastMsg));
         }
     }
 
@@ -102,13 +101,21 @@ public abstract class Boss {
         // announce death
         FileConfiguration settings = CustomBosses.getInstance().getSettings().getConfig();
         if (settings.getBoolean("Boss.broadcastDeath")) {
-            String deathMsg;
+            Component deathMsg;
             if (killer != null) {
-                deathMsg = msgParser.parse(settings.getString("Boss.deathBroadcastMessagePlayer"), killer.getName(), config.getName());
+                deathMsg = msgParser.parse(
+                        Component.text(settings.getString("Boss.deathBroadcastMessagePlayer")),
+                        killer.customName(),
+                        MessageUtils.mmsgToComponent(config.getName())
+                );
             } else {
-                deathMsg = msgParser.parse(settings.getString("Boss.deathBroadcastMessageAnonymous"), null, config.getName());
+                deathMsg = msgParser.parse(
+                        Component.text(settings.getString("Boss.deathBroadcastMessageAnonymous")),
+                        null,
+                        MessageUtils.mmsgToComponent(config.getName())
+                );
             }
-            Bukkit.broadcast(MessageUtils.miniMessageToComponent(deathMsg));
+            Bukkit.broadcast(deathMsg);
         }
         // trigger event
         if (killer != null) {
@@ -131,13 +138,12 @@ public abstract class Boss {
                     return;
                 }
                 // give resistance so the boss won't kill itself
-                entity.getEntity().addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 2, 255, false, false));
                 if (!ability.isSingleTarget()) {
                     // use ability on all players in range
                     for (Player p : entity.getLocation().getNearbyPlayers(config.getAttackRange(), player -> player.getGameMode() == GameMode.SURVIVAL)) {
                         ability.use(this, p);
                         p.sendActionBar(
-                                MessageUtils.miniMessageToComponent(String.format(BossAbility.USAGE_MESSAGE, config.getName(), ability.getName()))
+                                MessageUtils.mmsgToComponent(String.format(BossAbility.USAGE_MESSAGE, config.getName(), ability.getName()))
                         );
                     }
                 } else {
@@ -147,7 +153,7 @@ public abstract class Boss {
 
                     ability.use(this, player);
                     player.sendActionBar(
-                            MessageUtils.miniMessageToComponent(String.format(BossAbility.USAGE_MESSAGE, config.getName(), ability.getName()))
+                            MessageUtils.mmsgToComponent(String.format(BossAbility.USAGE_MESSAGE, config.getName(), ability.getName()))
                     );
                 }
                 return;

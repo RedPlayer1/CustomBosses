@@ -4,6 +4,8 @@ import com.destroystokyo.paper.entity.ai.Goal;
 import com.destroystokyo.paper.entity.ai.GoalKey;
 import com.destroystokyo.paper.entity.ai.GoalType;
 import me.redplayer_1.custombosses.CustomBosses;
+import me.redplayer_1.custombosses.boss.Boss;
+import me.redplayer_1.custombosses.util.LocationUtils;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
@@ -60,10 +62,11 @@ public class TargetEntityGoal implements Goal<Mob> {
         if (!hostile) return;
         if (target == null || !isValidTarget(target)) {
             // target nearest entity
-            LivingEntity entity = parent.getLocation().getNearbyLivingEntities(targetRange).stream().toList().get(0);
-            if (entity != null && !entity.equals(parent)) {
-                target = entity;
-                parent.setTarget(entity);
+            //LivingEntity entity = parent.getLocation().getNearbyLivingEntities(targetRange).stream().toList().get(0);
+            Player player = LocationUtils.getClosestPlayer(parent.getLocation(), true, targetRange);
+            if (player != null && isValidTarget(player)) {
+                target = player;
+                parent.setTarget(player);
             }
         }
         if (!defaultHostile && parent.getLocation().distanceSquared(target.getLocation()) <= attackRange) {
@@ -75,7 +78,7 @@ public class TargetEntityGoal implements Goal<Mob> {
         if (!target.isValid() || target.equals(parent) || !target.getWorld().equals(parent.getWorld())) return false;
         if (target instanceof Player p)
             return p.getGameMode() != GameMode.CREATIVE && p.getGameMode() != GameMode.SPECTATOR;
-        return true;
+        else return !Boss.isBoss(target);
     }
 
     public void setTarget(LivingEntity target) {

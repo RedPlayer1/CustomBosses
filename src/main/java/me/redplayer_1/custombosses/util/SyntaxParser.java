@@ -1,5 +1,7 @@
 package me.redplayer_1.custombosses.util;
 
+import net.kyori.adventure.text.Component;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +55,26 @@ public class SyntaxParser {
             } else {
                 input = input.replace(placeholder, values[index]);
             }
+            index++;
+        }
+        return input;
+    }
+
+    /**
+     * Parses the input with the provided values using predefined placeholders.
+     */
+    public Component parse(Component input, Component... values) {
+        int index = 0;
+        for (String placeholder : vars.keySet()) {
+            if (values[index] == null) placeholder = "";
+            final String finalPlaceholder = placeholder;
+            final int finalIndex = index;
+
+            input = input.replaceText(builder -> {
+                builder.matchLiteral(finalPlaceholder);
+                builder.replacement(values[finalIndex]);
+            });
+
             index++;
         }
         return input;

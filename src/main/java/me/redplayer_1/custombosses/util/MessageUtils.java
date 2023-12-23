@@ -2,6 +2,7 @@ package me.redplayer_1.custombosses.util;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class MessageUtils {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
@@ -24,7 +25,17 @@ public class MessageUtils {
         return result;
     }
 
-    public static Component miniMessageToComponent(String miniMessage) {
+    /**
+     * Converts a String with MiniMessage syntax to a Component.
+     */
+    public static Component mmsgToComponent(String miniMessage) {
         return MINI_MESSAGE.deserialize(miniMessage);
+    }
+
+    /**
+     * Converts a Component of a MiniMessage to a String with Minecraft color codes.
+     */
+    public static String mmsgToString(Component miniMessage) {
+        return LegacyComponentSerializer.legacyAmpersand().serialize(miniMessage);
     }
 }

@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class Mob implements Listener {
@@ -29,10 +30,12 @@ public class Mob implements Listener {
     // incoming damage is multiplied by this. Affected by custom armor & weapons (+ enchants)
     private double damageScalar = 1.0;
 
+    private String name;
     private final LivingEntity entity;
     private boolean invincible;
     private final double maxHealth;
     private double health; // the actual health of this mob
+    private boolean showHealth;
 
     private final Hologram hologram; // line 0 is the name, line 1 is the health
 
@@ -46,8 +49,8 @@ public class Mob implements Listener {
      * @param hostile whether the Mob should attack other entities
      * @param invincible if the Mob should take damage
      */
-    public Mob(String name, EntityType type, Location location, double maxHealth, double attackRange, boolean hostile, boolean invincible) {
-        this(name, type, location, maxHealth, attackRange, hostile);
+    public Mob(String name, EntityType type, Location location, double maxHealth, boolean showHealth, double attackRange, boolean hostile, boolean invincible) {
+        this(name, type, location, maxHealth, showHealth, attackRange, hostile);
         this.invincible = invincible;
     }
 
@@ -60,7 +63,7 @@ public class Mob implements Listener {
      * @param attackRange how far away entities can be attacked form (distance in blocks ^ 2)
      * @param hostile whether the Mob should attack other entities
      */
-    public Mob(String name, EntityType type, Location location, double maxHealth, double attackRange, boolean hostile) {
+    public Mob(String name, EntityType type, Location location, double maxHealth, boolean showHealth, double attackRange, boolean hostile) {
         // ensure entity is a living one
         if (location.getWorld().spawnEntity(location, type) instanceof LivingEntity le) {
             entity = le;
@@ -71,20 +74,26 @@ public class Mob implements Listener {
             throw new RuntimeException("The Mob {name} must be a type of LivingEntity! (not " + type.name() + ")");
         }
         registry.put(uuid, this);
+        this.name = name;
         this.maxHealth = maxHealth;
         this.health = maxHealth;
+        this.showHealth = showHealth;
 
         Bukkit.getPluginManager().registerEvents(this, CustomBosses.getInstance());
 
-        hologram = DHAPI.createHologram(uuid.toString(), entity.getLocation(), false, Arrays.asList("1", "2"));
-        DHAPI.setHologramLine(hologram, 0, name);
+        if (showHealth)
+            hologram = DHAPI.createHologram(uuid.toString(), entity.getLocation(), false, List.of("1", "2"));
+        else
+            hologram = DHAPI.createHologram(uuid.toString(), entity.getLocation(), false, List.of("1"));
 
         // moves nametag hologram every 10 ticks to reduce lag
         Bukkit.getScheduler().runTaskTimer(CustomBosses.getInstance(), (task) -> {
             if (entity.isDead() || health <= 0) {
                 task.cancel();
             } else {
-                DHAPI.setHologramLine(hologram, 1, String.format("&l&c♡ &r%.2f", health));
+                DHAPI.setHologramLine(hologram, 0, name);
+                if (showHealth)
+                    DHAPI.setHologramLine(hologram, 1, String.format("&l&c♡ &r%.2f", health));
                 DHAPI.moveHologram(hologram, entity.getLocation().add(0, entity.getEyeHeight() + 1, 0));
             }
         }, 0, 5);
@@ -160,6 +169,17 @@ public class Mob implements Listener {
      */
     public LivingEntity getEntity() {
         return entity;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set (supports Minecraft color codes)
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

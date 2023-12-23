@@ -68,7 +68,7 @@ public class DamageListener implements Listener {
         Boss boss = Boss.of(killer);
         if (boss != null) {
             // get the uuid from the boss's metadata
-            event.deathMessage(MessageUtils.miniMessageToComponent(
+            event.deathMessage(MessageUtils.mmsgToComponent(
                     deathMsgParser.parse(CustomBosses.getInstance().getSettings().getConfig().getString("Boss.playerDeathMessage", ""),
                             killed.getName(), boss.getConfig().getName())
             ));
