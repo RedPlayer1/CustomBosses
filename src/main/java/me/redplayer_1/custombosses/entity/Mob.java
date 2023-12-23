@@ -33,7 +33,7 @@ public class Mob implements Listener {
     private String name;
     private final LivingEntity entity;
     private boolean invincible;
-    private final double maxHealth;
+    private double maxHealth;
     private double health; // the actual health of this mob
     private boolean showHealth;
 
@@ -186,7 +186,7 @@ public class Mob implements Listener {
      * Set the health of the Mob. Values greater than the max will be rounded down.
      */
     public void setHealth(double health) {
-        setHealth(health, true);
+        setHealth(health, false);
     }
 
     /**
@@ -196,6 +196,26 @@ public class Mob implements Listener {
     public void setHealth(double health, boolean ignoreMax) {
         if (ignoreMax) this.health = health;
         else this.health = Math.min(health, maxHealth);
+    }
+
+    public double getHealth() {
+        return health;
+    }
+
+    public void setMaxHealth(double maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
+    public double getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void setDamageScalar(double damageScalar) {
+        this.damageScalar = damageScalar;
+    }
+
+    public double getDamageScalar() {
+        return damageScalar;
     }
 
     public void setInvincible(boolean invincible) {
