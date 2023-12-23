@@ -59,24 +59,4 @@ public class SyntaxParser {
         }
         return input;
     }
-
-    /**
-     * Parses the input with the provided values using predefined placeholders.
-     */
-    public Component parse(Component input, Component... values) {
-        int index = 0;
-        for (String placeholder : vars.keySet()) {
-            if (values[index] == null) placeholder = "";
-            final String finalPlaceholder = placeholder;
-            final int finalIndex = index;
-
-            input = input.replaceText(builder -> {
-                builder.matchLiteral(finalPlaceholder);
-                builder.replacement(values[finalIndex]);
-            });
-
-            index++;
-        }
-        return input;
-    }
 }
