@@ -1,7 +1,6 @@
 package me.redplayer_1.custombosses.command;
 
 import me.redplayer_1.custombosses.boss.Boss;
-import me.redplayer_1.custombosses.boss.BossFactory;
 import me.redplayer_1.custombosses.boss.BossType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -37,9 +36,8 @@ public class BossCommand extends Command {
             } else if (args[1].equalsIgnoreCase("spawn")) {
                 // spawn a new boss of that type
                 try {
-                    BossType type = BossType.valueOf(args[0].toUpperCase());
-                    Boss boss = BossFactory.create(type);
-                    player.sendPlainMessage("&bSpawning a " + boss.getConfig().getName() + ".");
+                    Boss boss = BossType.valueOf(args[0].toUpperCase()).newInstance();
+                    player.sendPlainMessage("&bSpawning a " + boss.getConfig().name() + ".");
                     boss.spawn(player.getLocation(), player);
                 } catch (IllegalArgumentException e) {
                     player.sendPlainMessage("Invalid Name!");

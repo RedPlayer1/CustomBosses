@@ -70,7 +70,7 @@ public class DamageListener implements Listener {
             // get the uuid from the boss's metadata
             event.deathMessage(MessageUtils.mmsgToComponent(
                     deathMsgParser.parse(CustomBosses.getInstance().getSettings().getConfig().getString("Boss.playerDeathMessage", ""),
-                            killed.getName(), boss.getConfig().getName())
+                            killed.getName(), boss.getConfig().name())
             ));
         }
     }

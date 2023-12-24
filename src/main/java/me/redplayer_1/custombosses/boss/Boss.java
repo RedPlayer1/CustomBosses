@@ -9,7 +9,6 @@ import me.redplayer_1.custombosses.entity.Mob;
 import me.redplayer_1.custombosses.util.LocationUtils;
 import me.redplayer_1.custombosses.util.MessageUtils;
 import me.redplayer_1.custombosses.util.SyntaxParser;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -23,6 +22,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+/**
+ * The root class for all Bosses. For any subclass in {@link BossType}, it must have a no-argument constructor.
+ * The recommended approach is:
+ * <pre>{@code
+ * public class MyBoss extends Boss {
+ *     public MyBoss() {
+ *         super(args...);
+ *     }
+ * }
+ * }</pre>
+ */
 public abstract class Boss {
     private static final Random random = new Random();
     private static final HashMap<UUID, Boss> registry = new HashMap<>();
@@ -48,14 +58,14 @@ public abstract class Boss {
      */
     public final void spawn(Location loc, @Nullable Entity spawner) {
         onPreSpawn(loc);
-        entity = new Mob(config.getName(), EntityType.valueOf(config.getEntityType()), loc, config.getHealth(), true, 4, true);
+        entity = new Mob(config.name(), EntityType.valueOf(config.entityType()), loc, config.health(), true, 4, true);
         registerBoss(this);
 
         // stat increment
         if (spawner != null) {
             PlayerStats stats = PlayerStats.getRegistry().get(spawner.getUniqueId());
             if (stats != null) {
-                stats.incrementSpawn(BossFactory.typeOf(this));
+                stats.incrementSpawn(config.bossType());
             }
         }
         onSpawn();
@@ -74,9 +84,9 @@ public abstract class Boss {
         if (settings.getBoolean("Boss.broadcastSpawn")) {
             String broadcastMsg;
             if (spawner != null) {
-                broadcastMsg = msgParser.parse(settings.getString("Boss.spawnBroadcastMessagePlayer"), spawner.getName(), config.getName());
+                broadcastMsg = msgParser.parse(settings.getString("Boss.spawnBroadcastMessagePlayer"), spawner.getName(), config.name());
             } else {
-                broadcastMsg = msgParser.parse(settings.getString("Boss.spawnBroadcastMessageAnonymous"), null, config.getName());
+                broadcastMsg = msgParser.parse(settings.getString("Boss.spawnBroadcastMessageAnonymous"), null, config.name());
             }
             Bukkit.broadcast(MessageUtils.mmsgToComponent(broadcastMsg));
         }
@@ -101,27 +111,27 @@ public abstract class Boss {
         // announce death
         FileConfiguration settings = CustomBosses.getInstance().getSettings().getConfig();
         if (settings.getBoolean("Boss.broadcastDeath")) {
-            Component deathMsg;
+            String deathMsg;
             if (killer != null) {
                 deathMsg = msgParser.parse(
-                        Component.text(settings.getString("Boss.deathBroadcastMessagePlayer")),
-                        killer.customName(),
-                        MessageUtils.mmsgToComponent(config.getName())
+                        settings.getString("Boss.deathBroadcastMessagePlayer"),
+                        killer.getName(),
+                        config.name()
                 );
             } else {
                 deathMsg = msgParser.parse(
-                        Component.text(settings.getString("Boss.deathBroadcastMessageAnonymous")),
+                        settings.getString("Boss.deathBroadcastMessageAnonymous"),
                         null,
-                        MessageUtils.mmsgToComponent(config.getName())
+                        config.name()
                 );
             }
-            Bukkit.broadcast(deathMsg);
+            Bukkit.broadcast(MessageUtils.mmsgToComponent(deathMsg));
         }
         // trigger event
         if (killer != null) {
             PlayerStats stats = PlayerStats.getRegistry().get(killer.getUniqueId());
             if (stats != null) {
-                stats.incrementKill(BossFactory.typeOf(this));
+                stats.incrementKill(config.bossType());
             }
         }
         onKill(entity.getLocation(), killer);
@@ -140,20 +150,20 @@ public abstract class Boss {
                 // give resistance so the boss won't kill itself
                 if (!ability.isSingleTarget()) {
                     // use ability on all players in range
-                    for (Player p : entity.getLocation().getNearbyPlayers(config.getAttackRange(), player -> player.getGameMode() == GameMode.SURVIVAL)) {
+                    for (Player p : entity.getLocation().getNearbyPlayers(config.attackRange(), player -> player.getGameMode() == GameMode.SURVIVAL)) {
                         ability.use(this, p);
                         p.sendActionBar(
-                                MessageUtils.mmsgToComponent(String.format(BossAbility.USAGE_MESSAGE, config.getName(), ability.getName()))
+                                MessageUtils.mmsgToComponent(String.format(BossAbility.USAGE_MESSAGE, config.name(), ability.getName()))
                         );
                     }
                 } else {
                     // use ability on closest player (in range)
-                    Player player = LocationUtils.getClosestPlayer(entity.getLocation(), true, config.getAttackRange());
+                    Player player = LocationUtils.getClosestPlayer(entity.getLocation(), true, config.attackRange());
                     if (player == null) return;
 
                     ability.use(this, player);
                     player.sendActionBar(
-                            MessageUtils.mmsgToComponent(String.format(BossAbility.USAGE_MESSAGE, config.getName(), ability.getName()))
+                            MessageUtils.mmsgToComponent(String.format(BossAbility.USAGE_MESSAGE, config.name(), ability.getName()))
                     );
                 }
                 return;
@@ -163,6 +173,7 @@ public abstract class Boss {
 
     /**
      * Called before the Boss is spawned. The entity representing the Boss doesn't exist yet.
+     *
      * @param spawnLocation the location that the Boss will spawn
      */
     public abstract void onPreSpawn(Location spawnLocation);
@@ -202,7 +213,7 @@ public abstract class Boss {
         return config;
     }
 
-    public Mob getMob() {
+    public final Mob getMob() {
         return entity;
     }
 

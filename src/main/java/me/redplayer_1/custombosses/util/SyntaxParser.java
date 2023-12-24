@@ -1,7 +1,5 @@
 package me.redplayer_1.custombosses.util;
 
-import net.kyori.adventure.text.Component;
-
 import java.util.HashMap;
 import java.util.Map;
 
