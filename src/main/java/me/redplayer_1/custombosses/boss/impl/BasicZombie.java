@@ -28,8 +28,8 @@ public class BasicZombie extends Boss {
     public BasicZombie() {
         super(new BossConfig(
                 "ZOMBIE", BossType.BASIC_ZOMBIE, "Basic Zombie", 50, 15),
-                new RegenAbility(0.3),
-                new ThunderstormAbility(0.7)
+                new RegenAbility(0.2),
+                new ThunderstormAbility(0.8)
         );
     }
 
