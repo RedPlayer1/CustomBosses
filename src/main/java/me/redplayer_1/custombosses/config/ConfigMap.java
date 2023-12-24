@@ -1,5 +1,6 @@
 package me.redplayer_1.custombosses.config;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,7 +69,11 @@ public class ConfigMap<K, V> {
         ConfigurationSection section = config.getConfig().getConfigurationSection(path);
         if (section != null) {
             for (String i : section.getKeys(false)) {
-                map.put(stringToK.apply(i), stringToV.apply(section.getString(i, "")));
+                try {
+                    map.put(stringToK.apply(i), stringToV.apply(section.getString(i, "")));
+                } catch (IllegalArgumentException e) {
+                    Bukkit.getLogger().severe("An error occurred whilst loading config value \"" + i + ": " + section.getString(i, "") + "\"!");
+                }
             }
         } else if (def != null) {
             map = def;

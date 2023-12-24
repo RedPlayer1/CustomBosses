@@ -20,7 +20,11 @@ public class InvincibilityAbility extends CooldownBossAbility {
     private static final short RADIUS = 1;
 
     public InvincibilityAbility() {
-        super("<dark_green>Invincibility", true, 0.6, TICK_DURATION);
+        this(0.6);
+    }
+
+    public InvincibilityAbility(double chance) {
+        super("<dark_green>Invincibility", true, chance, TICK_DURATION);
     }
 
     @Override

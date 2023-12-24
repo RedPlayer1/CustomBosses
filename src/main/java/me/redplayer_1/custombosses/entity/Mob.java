@@ -217,6 +217,14 @@ public class Mob implements Listener {
         return damageScalar;
     }
 
+    public void setShowHealth(boolean showHealth) {
+        this.showHealth = showHealth;
+    }
+
+    public boolean isShowingHealth() {
+        return showHealth;
+    }
+
     public void setInvincible(boolean invincible) {
         this.invincible = invincible;
     }

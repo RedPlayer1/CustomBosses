@@ -14,7 +14,11 @@ public class RegenAbility extends CooldownBossAbility {
     private static final int PERIOD = 15;
 
     public RegenAbility() {
-        super("<gradient:red:dark_red>Regen</gradient>", true, 0.85, PERIOD * INCREMENTS);
+        this(0.85);
+    }
+
+    public RegenAbility(double chance) {
+        super("<gradient:red:dark_red>Regen</gradient>", true, chance, PERIOD * INCREMENTS);
     }
 
     @Override

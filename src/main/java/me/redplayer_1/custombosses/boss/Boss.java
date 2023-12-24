@@ -57,39 +57,43 @@ public abstract class Boss {
      * @param loc the location to spawn the boss
      */
     public final void spawn(Location loc, @Nullable Entity spawner) {
-        onPreSpawn(loc);
-        entity = new Mob(config.name(), EntityType.valueOf(config.entityType()), loc, config.health(), true, 4, true);
-        registerBoss(this);
+        SpawnBuilder builder = new SpawnBuilder();
+        onPreSpawn(loc, builder);
+        Bukkit.getScheduler().runTaskLater(CustomBosses.getInstance(), mainTask -> {
+            entity = new Mob(config.name(), EntityType.valueOf(config.entityType()), loc, config.health(), true, 4, true);
+            registerBoss(this);
 
-        // stat increment
-        if (spawner != null) {
-            PlayerStats stats = PlayerStats.getRegistry().get(spawner.getUniqueId());
-            if (stats != null) {
-                stats.incrementSpawn(config.bossType());
-            }
-        }
-        onSpawn();
-
-        // ability task
-        Bukkit.getScheduler().runTaskTimer(CustomBosses.getInstance(), task -> {
-            if (entity.isDead()) {
-                task.cancel();
-            } else {
-                useAbility();
-            }
-        }, 5, BossAbility.DEFAULT_USAGE_DELAY);
-
-        // announce spawn
-        FileConfiguration settings = CustomBosses.getInstance().getSettings().getConfig();
-        if (settings.getBoolean("Boss.broadcastSpawn")) {
-            String broadcastMsg;
+            // stat increment
             if (spawner != null) {
-                broadcastMsg = msgParser.parse(settings.getString("Boss.spawnBroadcastMessagePlayer"), spawner.getName(), config.name());
-            } else {
-                broadcastMsg = msgParser.parse(settings.getString("Boss.spawnBroadcastMessageAnonymous"), null, config.name());
+                PlayerStats stats = PlayerStats.getRegistry().get(spawner.getUniqueId());
+                if (stats != null) {
+                    stats.incrementSpawn(config.bossType());
+                }
             }
-            Bukkit.broadcast(MessageUtils.mmsgToComponent(broadcastMsg));
-        }
+            onSpawn();
+
+            // ability task
+            Bukkit.getScheduler().runTaskTimer(CustomBosses.getInstance(), task -> {
+                if (entity.isDead()) {
+                    task.cancel();
+                } else {
+                    useAbility();
+                }
+            }, 5, BossAbility.DEFAULT_USAGE_DELAY);
+
+            // announce spawn
+            FileConfiguration settings = CustomBosses.getInstance().getSettings().getConfig();
+            if (settings.getBoolean("Boss.broadcastSpawn")) {
+                String broadcastMsg;
+                if (spawner != null) {
+                    broadcastMsg = msgParser.parse(settings.getString("Boss.spawnBroadcastMessagePlayer"), spawner.getName(), config.name());
+                } else {
+                    broadcastMsg = msgParser.parse(settings.getString("Boss.spawnBroadcastMessageAnonymous"), null, config.name());
+                }
+                Bukkit.broadcast(MessageUtils.mmsgToComponent(broadcastMsg));
+            }
+        }, builder.delay);
+
     }
 
     /**
@@ -176,7 +180,7 @@ public abstract class Boss {
      *
      * @param spawnLocation the location that the Boss will spawn
      */
-    public abstract void onPreSpawn(Location spawnLocation);
+    public abstract void onPreSpawn(Location spawnLocation, SpawnBuilder builder);
 
     /**
      * Called after the Boss is spawned. The entity representing this Boss will not be null.
@@ -254,6 +258,14 @@ public abstract class Boss {
 
     public static @Nullable Boss of(Mob mob) {
         return registry.get(mob.getUuid());
+    }
+
+    public static class SpawnBuilder {
+        private long delay = 0; // the delay in ticks
+
+        public void addDelay(long delay) {
+            this.delay += delay;
+        }
     }
 }
 

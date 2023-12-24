@@ -5,9 +5,12 @@ import me.redplayer_1.custombosses.boss.Boss;
 import org.bukkit.entity.Player;
 
 public class ThunderstormAbility extends BossAbility {
-
     public ThunderstormAbility() {
-        super("<gradient:yellow:gold>Thunderstorm</gradient>", false, 0.6);
+        this(0.6);
+    }
+
+    public ThunderstormAbility(double chance) {
+        super("<gradient:yellow:gold>Thunderstorm</gradient>", false, chance);
     }
 
     @Override

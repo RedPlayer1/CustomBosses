@@ -11,7 +11,11 @@ public class FireRingAbility extends BossAbility {
     private static final int FIRE_TICKS = 120;
 
     public FireRingAbility() {
-        super("<gradient:#ff7300:#ff4800>Fire Ring</gradient>", true, 0.5);
+        this(0.65);
+    }
+
+    public FireRingAbility(double chance) {
+        super("<gradient:#ff7300:#ff4800>Fire Ring</gradient>", true, chance);
     }
 
     @Override

@@ -1,14 +1,14 @@
 package me.redplayer_1.custombosses.boss;
 
+import me.redplayer_1.custombosses.boss.impl.BasicHusk;
 import me.redplayer_1.custombosses.boss.impl.BasicZombie;
-import me.redplayer_1.custombosses.boss.impl.TestBoss;
 import org.bukkit.Bukkit;
 
 import java.util.LinkedList;
 
 public enum BossType {
-    TEST_BOSS(TestBoss.class),
-    BASIC_ZOMBIE(BasicZombie.class);
+    BASIC_ZOMBIE(BasicZombie.class),
+    BASIC_HUSK(BasicHusk.class);
 
     public static final String[] values;
 

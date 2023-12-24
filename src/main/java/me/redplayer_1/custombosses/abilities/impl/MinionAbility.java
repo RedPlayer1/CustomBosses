@@ -12,9 +12,12 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class MinionAbility extends CooldownBossAbility {
-
     public MinionAbility() {
-        super("<gradient:#73ff00:#83ff6e>Minion</gradient>", true, 0.4, 120);
+        this(0.4);
+    }
+
+    public MinionAbility(double chance) {
+        super("<gradient:#73ff00:#83ff6e>Minion</gradient>", true, chance, 120);
     }
 
     @Override
