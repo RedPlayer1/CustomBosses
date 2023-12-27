@@ -2,7 +2,6 @@ package me.redplayer_1.custombosses.entity;
 
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
-import eu.decentsoftware.holograms.api.holograms.HologramLine;
 import me.redplayer_1.custombosses.CustomBosses;
 import me.redplayer_1.custombosses.events.DamageListener;
 import org.bukkit.Bukkit;
@@ -18,8 +17,6 @@ import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
