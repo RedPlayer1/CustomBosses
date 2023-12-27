@@ -29,6 +29,7 @@ public class BasicHusk extends Boss {
     public BasicHusk() {
         super(
                 new BossConfig("HUSK", BossType.BASIC_HUSK, "Basic Husk", 100, 20),
+                1,
                 new FireRingAbility(0.4),
                 new StrengthAbility(0.9, 7),
                 new ThunderstormAbility(0.7),

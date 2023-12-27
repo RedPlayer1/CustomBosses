@@ -40,9 +40,11 @@ public abstract class Boss {
     private Mob entity;
     private List<BossAbility> abilities;
     private final BossConfig config;
+    private int level;
 
-    public Boss(BossConfig config, BossAbility... abilities) {
+    public Boss(BossConfig config, int level, BossAbility... abilities) {
         this.config = config;
+        this.level = level;
         this.abilities = Arrays.stream(abilities).toList();
     }
 
@@ -231,6 +233,13 @@ public abstract class Boss {
 
     public List<BossAbility> getAbilities() {
         return abilities;
+    }
+
+    /**
+     * Updates various variables that scale with level.
+     */
+    private void applyLevel() {
+        entity.setMaxHealth(entity.getMaxHealth() + entity.getMaxHealth() * level * 0.2);
     }
 
     /**

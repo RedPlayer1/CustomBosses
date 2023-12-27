@@ -2,6 +2,7 @@ package me.redplayer_1.custombosses.entity;
 
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
+import eu.decentsoftware.holograms.api.holograms.HologramLine;
 import me.redplayer_1.custombosses.CustomBosses;
 import me.redplayer_1.custombosses.events.DamageListener;
 import org.bukkit.Bukkit;
@@ -17,8 +18,10 @@ import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class Mob implements Listener {
     // The Mob's UUID is stored in their metadata as a String.
@@ -36,7 +39,12 @@ public class Mob implements Listener {
     private double health; // the actual health of this mob
     private boolean showHealth;
 
+    // health milestones (Good = green | Medium = yellow | Bad = red)
+    private double healthMedium; // < 60% max hp
+    private double healthBad; // < 20% max hp
+
     private final Hologram hologram; // line 0 is the name, line 1 is the health
+    private Consumer<Hologram> hologramManager; // function to manage the hologram shown above the entity
 
     /**
      * Create a new {@link Mob} that is automatically spawned.
@@ -74,26 +82,38 @@ public class Mob implements Listener {
         }
         registry.put(uuid, this);
         this.name = name;
-        this.maxHealth = maxHealth;
+        setMaxHealth(maxHealth);
         this.health = maxHealth;
         this.showHealth = showHealth;
+        hologram = DHAPI.createHologram(uuid.toString(), entity.getLocation(), false);
 
         Bukkit.getPluginManager().registerEvents(this, CustomBosses.getInstance());
 
-        if (showHealth)
-            hologram = DHAPI.createHologram(uuid.toString(), entity.getLocation(), false, List.of("1", "2"));
-        else
-            hologram = DHAPI.createHologram(uuid.toString(), entity.getLocation(), false, List.of("1"));
+        // default Hologram Manager
+        setHologramManager((hologram) -> {
+            DHAPI.setHologramLine(hologram, 0, name);
+            if (showHealth)
+                try {
+                    String color = "&a";
+                    if (health < healthBad) color = "&4";
+                    else if (health < healthMedium) color = "&6";
+                    DHAPI.setHologramLine(hologram, 1, String.format("&l&c♡ &r" + color + "%.2f", health));
+                } catch (IllegalArgumentException ex) {
+                    DHAPI.addHologramLine(hologram, "");
+                }
+            else if (hologram.getPage(0).getLines().size() > 1) {
+                DHAPI.removeHologramLine(hologram, 1);
+            }
+
+            DHAPI.moveHologram(hologram, entity.getLocation().add(0, entity.getEyeHeight() + 1, 0));
+        }, showHealth? 2 : 1);
 
         // moves nametag hologram every 10 ticks to reduce lag
         Bukkit.getScheduler().runTaskTimer(CustomBosses.getInstance(), (task) -> {
             if (entity.isDead() || health <= 0) {
                 task.cancel();
             } else {
-                DHAPI.setHologramLine(hologram, 0, name);
-                if (showHealth)
-                    DHAPI.setHologramLine(hologram, 1, String.format("&l&c♡ &r%.2f", health));
-                DHAPI.moveHologram(hologram, entity.getLocation().add(0, entity.getEyeHeight() + 1, 0));
+                hologramManager.accept(hologram);
             }
         }, 0, 5);
     }
@@ -203,6 +223,8 @@ public class Mob implements Listener {
 
     public void setMaxHealth(double maxHealth) {
         this.maxHealth = maxHealth;
+        healthMedium = maxHealth * .6;
+        healthBad = maxHealth * .2;
     }
 
     public double getMaxHealth() {
@@ -227,6 +249,22 @@ public class Mob implements Listener {
 
     public void setInvincible(boolean invincible) {
         this.invincible = invincible;
+    }
+
+    /**
+     * @param manager Function that is called every few ticks to handle the changing of the Hologram
+     *                shown above the entity.
+     * @param lines the number of lines to be put on the first page of the Hologram
+     */
+    public void setHologramManager(Consumer<Hologram> manager, int lines) {
+        if (hologram.getPage(0).getLines().size() != lines) {
+            hologram.removePage(0);
+            hologram.addPage().setIndex(0);
+            for (int i = 0; i < lines; i++) {
+                DHAPI.addHologramLine(hologram, String.valueOf(i));
+            }
+        }
+        hologramManager = manager;
     }
 
     /**

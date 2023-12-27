@@ -1,5 +1,6 @@
 package me.redplayer_1.custombosses.boss.impl;
 
+import me.redplayer_1.custombosses.abilities.impl.InvincibilityAbility;
 import me.redplayer_1.custombosses.abilities.impl.RegenAbility;
 import me.redplayer_1.custombosses.abilities.impl.ThunderstormAbility;
 import me.redplayer_1.custombosses.boss.Boss;
@@ -28,8 +29,10 @@ public class BasicZombie extends Boss {
     public BasicZombie() {
         super(new BossConfig(
                 "ZOMBIE", BossType.BASIC_ZOMBIE, "Basic Zombie", 50, 15),
+                1,
                 new RegenAbility(0.2),
-                new ThunderstormAbility(0.8)
+                new ThunderstormAbility(0.8),
+                new InvincibilityAbility(0.9)
         );
     }
 
