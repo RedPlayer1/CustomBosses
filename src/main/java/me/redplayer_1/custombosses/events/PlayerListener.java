@@ -1,9 +1,11 @@
 package me.redplayer_1.custombosses.events;
 
+import me.redplayer_1.custombosses.abilities.impl.StasisAbility;
 import me.redplayer_1.custombosses.api.PlayerStats;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerListener implements Listener {
@@ -20,5 +22,10 @@ public class PlayerListener implements Listener {
         if (stats != null) {
             stats.save(true);
         }
+    }
+
+    @EventHandler
+    public void onMove(PlayerMoveEvent event) {
+        event.setCancelled(StasisAbility.handleMove(event.getPlayer()));
     }
 }

@@ -12,6 +12,7 @@ import me.redplayer_1.custombosses.util.SyntaxParser;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -73,6 +74,8 @@ public abstract class Boss {
                 }
             }
             onSpawn();
+            // make it harder for players to constantly knock Boss back & avoid damage
+            entity.getEntity().getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.6);
 
             // ability task
             Bukkit.getScheduler().runTaskTimer(CustomBosses.getInstance(), task -> {
