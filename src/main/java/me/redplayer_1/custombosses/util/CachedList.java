@@ -4,21 +4,16 @@ import me.redplayer_1.custombosses.CustomBosses;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 public class CachedList<T> implements Iterable<T>{
-    private final LinkedList<CacheEntry<T>> list = new LinkedList<>();
+    private final HashMap<T, Long> list = new HashMap<>();
 
     public CachedList(int lifetime, TimeUnit unit) {
         Bukkit.getAsyncScheduler().runAtFixedRate(CustomBosses.getInstance(), task -> {
-            for (int i = 0; i < list.size(); i++) {
-                if (System.currentTimeMillis() - list.get(i).insertTime >= unit.toMillis(lifetime)) {
-                    list.remove(i);
-                    i--;
-                }
-            }
+            list.entrySet().removeIf(entry -> System.currentTimeMillis() - entry.getValue() >= unit.toMillis(lifetime));
         }, lifetime, lifetime, unit);
     }
 
@@ -40,6 +35,10 @@ public class CachedList<T> implements Iterable<T>{
 
     public T get(int index) {
         return list.get(index).item;
+    }
+
+    public boolean contains(T e) {
+        return list.containsKey(e);
     }
 
     public void clear() {
