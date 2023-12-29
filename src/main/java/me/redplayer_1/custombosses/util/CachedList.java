@@ -4,7 +4,6 @@ import me.redplayer_1.custombosses.CustomBosses;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
@@ -13,9 +12,10 @@ public class CachedList<T> implements Iterable<T>{
     private final LinkedList<CacheEntry<T>> list = new LinkedList<>();
 
     public CachedList(int lifetime, TimeUnit unit) {
-        Bukkit.getAsyncScheduler().runAtFixedRate(CustomBosses.getInstance(), task -> {
-            list.removeIf(entry -> System.currentTimeMillis() - entry.insertTime >= unit.toMillis(lifetime));
-        }, lifetime, lifetime, unit);
+        Bukkit.getAsyncScheduler().runAtFixedRate(CustomBosses.getInstance(),
+                task -> list.removeIf(entry -> System.currentTimeMillis() - entry.insertTime >= unit.toMillis(lifetime)),
+                lifetime, lifetime, unit
+        );
     }
 
     @SafeVarargs
