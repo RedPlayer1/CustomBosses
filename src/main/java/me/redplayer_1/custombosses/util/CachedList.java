@@ -6,14 +6,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 public class CachedList<T> implements Iterable<T>{
-    private final HashMap<T, Long> list = new HashMap<>();
+    private final LinkedList<CacheEntry<T>> list = new LinkedList<>();
 
     public CachedList(int lifetime, TimeUnit unit) {
         Bukkit.getAsyncScheduler().runAtFixedRate(CustomBosses.getInstance(), task -> {
-            list.entrySet().removeIf(entry -> System.currentTimeMillis() - entry.getValue() >= unit.toMillis(lifetime));
+            list.removeIf(entry -> System.currentTimeMillis() - entry.insertTime >= unit.toMillis(lifetime));
         }, lifetime, lifetime, unit);
     }
 
@@ -38,7 +39,10 @@ public class CachedList<T> implements Iterable<T>{
     }
 
     public boolean contains(T e) {
-        return list.containsKey(e);
+        for (CacheEntry<T> entry : list) {
+            if (entry.item == e) return true;
+        }
+        return false;
     }
 
     public void clear() {
