@@ -78,5 +78,5 @@ public class CachedList<T> implements Iterable<T>{
         };
     }
 
-    protected record CacheEntry<E>(E item, long insertTime) {}
+    public record CacheEntry<E>(E item, long insertTime) {}
 }
