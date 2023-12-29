@@ -1,5 +1,6 @@
 package me.redplayer_1.custombosses.util;
 
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import me.redplayer_1.custombosses.CustomBosses;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
@@ -10,9 +11,10 @@ import java.util.concurrent.TimeUnit;
 
 public class CachedList<T> implements Iterable<T>{
     private final LinkedList<CacheEntry<T>> list = new LinkedList<>();
+    private final ScheduledTask clearTask;
 
     public CachedList(int lifetime, TimeUnit unit) {
-        Bukkit.getAsyncScheduler().runAtFixedRate(CustomBosses.getInstance(),
+        clearTask = Bukkit.getAsyncScheduler().runAtFixedRate(CustomBosses.getInstance(),
                 task -> list.removeIf(entry -> System.currentTimeMillis() - entry.insertTime >= unit.toMillis(lifetime)),
                 lifetime, lifetime, unit
         );
@@ -49,6 +51,14 @@ public class CachedList<T> implements Iterable<T>{
         list.clear();
     }
 
+    /**
+     * Kills the caching task and clears the list. Call this after the list is used for the last time.
+     */
+    public void destroy() {
+        clear();
+        clearTask.cancel();
+    }
+
     @NotNull
     @Override
     public Iterator<T> iterator() {
@@ -68,5 +78,5 @@ public class CachedList<T> implements Iterable<T>{
         };
     }
 
-    private record CacheEntry<E>(E item, long insertTime) {}
+    protected record CacheEntry<E>(E item, long insertTime) {}
 }
