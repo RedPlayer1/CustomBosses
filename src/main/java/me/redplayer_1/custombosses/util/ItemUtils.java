@@ -25,15 +25,17 @@ public class ItemUtils {
      * @param unbreakable if the item shouldn't lose durability
      * @return the created item
      */
-    public static ItemStack createItem(Material material, String name, List<String> lore, boolean unbreakable) {
+    public static ItemStack createItem(Material material, @Nullable String name, @Nullable List<String> lore, boolean unbreakable) {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
-        meta.displayName(MessageUtils.mmsgToComponent(name));
-        List<Component> newLore = new LinkedList<>();
-        for (String str: lore) {
-            newLore.add(MessageUtils.mmsgToComponent(str));
+        if (name != null) meta.displayName(MessageUtils.mmsgToComponent(name));
+        if (lore != null) {
+            List<Component> newLore = new LinkedList<>();
+            for (String str: lore) {
+                newLore.add(MessageUtils.mmsgToComponent(str));
+            }
+            meta.lore(newLore);
         }
-        meta.lore(newLore);
         meta.setUnbreakable(unbreakable);
 
         item.setItemMeta(meta);
