@@ -5,8 +5,14 @@ import me.redplayer_1.custombosses.entity.MobDeathEvent;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
 
 public class BossListener implements Listener {
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent event) {
+        if (Boss.isBoss(event.getEntity()))
+            event.getDrops().clear();
+    }
     @EventHandler
     public void onMobDeath(MobDeathEvent event) {
         Boss boss = Boss.of(event.getKilled());
