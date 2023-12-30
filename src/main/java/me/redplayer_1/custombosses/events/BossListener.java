@@ -15,7 +15,7 @@ public class BossListener implements Listener {
     }
     @EventHandler
     public void onMobDeath(MobDeathEvent event) {
-        Boss boss = Boss.of(event.getKilled());
+        Boss boss = Boss.of(event.getKilledMob());
         if (boss != null) {
             try {
                 boss.kill((LivingEntity) event.getKiller());

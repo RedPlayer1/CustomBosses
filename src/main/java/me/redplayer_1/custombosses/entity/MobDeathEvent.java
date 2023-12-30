@@ -43,10 +43,16 @@ public class MobDeathEvent extends Event implements Cancellable {
         cancelled = cancel;
     }
 
-    public Mob getKilled() {
+    /**
+     * @return The Mob that was killed
+     */
+    public Mob getKilledMob() {
         return killed;
     }
 
+    /**
+     * @return The Entity that killed the Mob
+     */
     public Entity getKiller() {
         return killer;
     }
