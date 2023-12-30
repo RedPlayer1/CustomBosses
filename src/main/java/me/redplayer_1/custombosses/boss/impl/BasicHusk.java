@@ -6,6 +6,7 @@ import me.redplayer_1.custombosses.abilities.impl.StrengthAbility;
 import me.redplayer_1.custombosses.abilities.impl.ThunderstormAbility;
 import me.redplayer_1.custombosses.boss.Boss;
 import me.redplayer_1.custombosses.boss.BossType;
+import me.redplayer_1.custombosses.boss.Trophy;
 import me.redplayer_1.custombosses.config.providers.BossConfig;
 import me.redplayer_1.custombosses.util.ItemUtils;
 import org.bukkit.Location;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class BasicHusk extends Boss {
-    private static final ItemStack TROPHY = ItemUtils.createItem(
+    private static final ItemStack TROPHY = new Trophy(
             Material.DEAD_BUSH,
             "<gradient:#ff5c26:yellow>Basic Husk Trophy</gradient>",
             List.of("<gray>Obtained from killing a <color:#ff5c26>Basic Husk</color>")
@@ -47,6 +48,8 @@ public class BasicHusk extends Boss {
     public void onSpawn() {
         getMob().setDamageScalar(0.6); // only take 60% damage
         EntityEquipment equipment = getMob().getEntity().getEquipment();
+        assert equipment != null;
+
         // give armor that won't drop
         equipment.setHelmet(new ItemStack(Material.LEATHER_HELMET), true);
         equipment.setHelmetDropChance(0);

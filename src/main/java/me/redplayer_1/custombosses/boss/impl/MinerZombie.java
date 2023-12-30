@@ -6,6 +6,7 @@ import me.redplayer_1.custombosses.abilities.impl.RegenAbility;
 import me.redplayer_1.custombosses.abilities.impl.StasisAbility;
 import me.redplayer_1.custombosses.boss.Boss;
 import me.redplayer_1.custombosses.boss.BossType;
+import me.redplayer_1.custombosses.boss.Trophy;
 import me.redplayer_1.custombosses.config.providers.BossConfig;
 import me.redplayer_1.custombosses.util.ItemUtils;
 import org.bukkit.Location;
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MinerZombie extends Boss {
-    private static final ItemStack TROPHY = ItemUtils.createItem(
+    private static final ItemStack TROPHY = new Trophy(
             Material.SEA_LANTERN,
             "<dark_green>Miner Zombie Trophy</dark_green>",
             List.of("<gray>Obtained from killing a <dark_green><i>Miner Zombie</i></dark_green>")
@@ -44,6 +45,8 @@ public class MinerZombie extends Boss {
     @Override
     public void onSpawn() {
         EntityEquipment equipment = getMob().getEntity().getEquipment();
+        assert equipment != null;
+
         equipment.setHelmet(new ItemStack(Material.SEA_LANTERN));
         equipment.setHelmetDropChance(0);
         equipment.setChestplate(new ItemStack(Material.CHAINMAIL_CHESTPLATE));

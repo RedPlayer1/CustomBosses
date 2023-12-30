@@ -5,6 +5,7 @@ import me.redplayer_1.custombosses.abilities.impl.RegenAbility;
 import me.redplayer_1.custombosses.abilities.impl.ThunderstormAbility;
 import me.redplayer_1.custombosses.boss.Boss;
 import me.redplayer_1.custombosses.boss.BossType;
+import me.redplayer_1.custombosses.boss.Trophy;
 import me.redplayer_1.custombosses.config.providers.BossConfig;
 import me.redplayer_1.custombosses.util.ItemUtils;
 import org.bukkit.Location;
@@ -20,11 +21,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class BasicZombie extends Boss {
-    private static final ItemStack TROPHY = ItemUtils.createItem(
+    private static final ItemStack TROPHY = new Trophy(
             Material.ZOMBIE_HEAD,
             "<gradient:dark_green:#4dff00>Basic Zombie Trophy</gradient>",
             List.of("<gray>Obtained from killing a <dark_green>Basic Zombie</dark_green>")
-            );
+    );
 
     public BasicZombie() {
         super(new BossConfig(
