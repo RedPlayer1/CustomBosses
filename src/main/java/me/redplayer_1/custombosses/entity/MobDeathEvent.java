@@ -7,14 +7,16 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Fired when a {@link Mob} is killed.
+ */
 public class MobDeathEvent extends Event implements Cancellable {
     private static final HandlerList HANDLER_LIST = new HandlerList();
     private boolean cancelled = false;
-    private Mob killed;
-    private Entity killer;
+    private final Mob killed;
+    private final Entity killer;
 
     /**
-     * Fired when a {@link Mob} is killed.
      * @param killed the killed Mob
      * @param killer the entity that killed it
      */
@@ -22,8 +24,7 @@ public class MobDeathEvent extends Event implements Cancellable {
         this.killed = killed;
         this.killer = killer;
     }
-
-    public static HandlerList getHandlerList() {
+    public static @NotNull HandlerList getHandlerList() {
         return HANDLER_LIST;
     }
 
