@@ -14,7 +14,7 @@ public class Trophy extends ItemStack {
 
     public Trophy(Material material, String name, List<String> lore) {
         super(material);
-        ItemStack item = ItemUtils.createItem(material, name, lore);
+        ItemStack item = ItemUtils.createItem(material, name, lore, true);
         setItemMeta(item.getItemMeta());
 
         editMeta(meta -> meta.getPersistentDataContainer().set(

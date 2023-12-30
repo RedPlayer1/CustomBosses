@@ -1,5 +1,6 @@
 package me.redplayer_1.custombosses;
 
+import me.redplayer_1.custombosses.abilities.impl.StasisAbility;
 import me.redplayer_1.custombosses.api.PlayerStats;
 import me.redplayer_1.custombosses.boss.Boss;
 import me.redplayer_1.custombosses.command.BossCommand;
@@ -9,6 +10,7 @@ import me.redplayer_1.custombosses.events.DamageListener;
 import me.redplayer_1.custombosses.events.PlayerListener;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -44,9 +46,13 @@ public final class CustomBosses extends JavaPlugin {
         }
 
         // Listeners
-        getServer().getPluginManager().registerEvents(new DamageListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new BossListener(), this);
+        PluginManager manager = getServer().getPluginManager();
+        // dedicated classes
+        manager.registerEvents(new DamageListener(), this);
+        manager.registerEvents(new PlayerListener(), this);
+        manager.registerEvents(new BossListener(), this);
+        // abilities
+        manager.registerEvents(new StasisAbility.StasisListener(), this);
 
         // Commands
         Bukkit.getCommandMap().register("custombosses", new BossCommand());
