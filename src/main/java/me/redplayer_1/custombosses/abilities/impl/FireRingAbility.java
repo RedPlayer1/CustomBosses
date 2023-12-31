@@ -19,11 +19,6 @@ public class FireRingAbility extends BossAbility {
     }
 
     @Override
-    public BossAbility newInstance() {
-        return new FireRingAbility();
-    }
-
-    @Override
     public boolean use(Boss boss, Player target) {
         Location bossLoc = boss.getLocation();
         if (bossLoc == null) return false;

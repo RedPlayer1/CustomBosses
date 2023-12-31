@@ -1,5 +1,6 @@
 package me.redplayer_1.custombosses;
 
+import me.redplayer_1.custombosses.abilities.impl.MinionAbility;
 import me.redplayer_1.custombosses.abilities.impl.StasisAbility;
 import me.redplayer_1.custombosses.api.PlayerStats;
 import me.redplayer_1.custombosses.boss.Boss;
@@ -53,6 +54,7 @@ public final class CustomBosses extends JavaPlugin {
         manager.registerEvents(new BossListener(), this);
         // abilities
         manager.registerEvents(new StasisAbility.StasisListener(), this);
+        manager.registerEvents(new MinionAbility.MinionListener(), this);
 
         // Commands
         Bukkit.getCommandMap().register("custombosses", new BossCommand());

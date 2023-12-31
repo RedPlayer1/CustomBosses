@@ -1,6 +1,5 @@
 package me.redplayer_1.custombosses.abilities.impl;
 
-import me.redplayer_1.custombosses.abilities.BossAbility;
 import me.redplayer_1.custombosses.abilities.CooldownBossAbility;
 import me.redplayer_1.custombosses.boss.Boss;
 import me.redplayer_1.custombosses.util.CachedList;
@@ -22,11 +21,6 @@ public class StasisAbility extends CooldownBossAbility {
     }
     public StasisAbility(double chance) {
         super("<gradient:green:yellow>Stasis</gradient>", false, chance, DURATION * 20 * 2 /* this ability is very op */);
-    }
-
-    @Override
-    public BossAbility newInstance() {
-        return new StasisAbility();
     }
 
     @Override

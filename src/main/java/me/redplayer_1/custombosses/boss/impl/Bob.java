@@ -18,11 +18,11 @@ public class Bob extends Boss {
         super(
                 new BossConfig("ZOMBIE", BossType.BOB, "Bob", 1000, 30),
                 1,
-                new StasisAbility(),
-                new StrengthAbility(),
-                new FireRingAbility(),
+                new StasisAbility(0),
+                new StrengthAbility(0),
+                new FireRingAbility(0),
                 new MinionAbility(),
-                new ThunderstormAbility()
+                new ThunderstormAbility(0)
         );
     }
 

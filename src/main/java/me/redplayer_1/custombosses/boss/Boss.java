@@ -147,7 +147,7 @@ public abstract class Boss {
         despawn();
     }
 
-    protected void useAbility() {
+    private void useAbility() {
         if (abilities.isEmpty()) return;
         for (BossAbility ability : abilities) {
             // calculate chance

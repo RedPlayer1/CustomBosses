@@ -3,7 +3,6 @@ package me.redplayer_1.custombosses.abilities;
 import me.redplayer_1.custombosses.boss.Boss;
 import org.bukkit.entity.Player;
 
-// TODO: ability config?
 public abstract class BossAbility {
     // the number of ticks to wait before trying to use an ability
     public static final long DEFAULT_USAGE_DELAY = 60L;
@@ -21,7 +20,7 @@ public abstract class BossAbility {
         this.chance = chance;
     }
 
-    public abstract BossAbility newInstance();
+    //public abstract BossAbility newInstance();
 
     /**
      * Fired when an entity attacks and this ability was chosen

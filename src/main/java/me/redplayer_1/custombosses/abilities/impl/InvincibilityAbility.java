@@ -1,7 +1,6 @@
 package me.redplayer_1.custombosses.abilities.impl;
 
 import me.redplayer_1.custombosses.CustomBosses;
-import me.redplayer_1.custombosses.abilities.BossAbility;
 import me.redplayer_1.custombosses.abilities.CooldownBossAbility;
 import me.redplayer_1.custombosses.boss.Boss;
 import org.bukkit.Bukkit;
@@ -27,10 +26,7 @@ public class InvincibilityAbility extends CooldownBossAbility {
         super("<dark_green>Invincibility", true, chance, TICK_DURATION);
     }
 
-    @Override
-    public BossAbility newInstance() {
-        return new InvincibilityAbility();
-    }
+
 
     @Override
     public boolean use(Boss boss, Player target) {

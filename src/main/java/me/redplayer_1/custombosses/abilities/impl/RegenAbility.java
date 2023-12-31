@@ -1,7 +1,6 @@
 package me.redplayer_1.custombosses.abilities.impl;
 
 import me.redplayer_1.custombosses.CustomBosses;
-import me.redplayer_1.custombosses.abilities.BossAbility;
 import me.redplayer_1.custombosses.abilities.CooldownBossAbility;
 import me.redplayer_1.custombosses.boss.Boss;
 import org.bukkit.Bukkit;
@@ -19,11 +18,6 @@ public class RegenAbility extends CooldownBossAbility {
 
     public RegenAbility(double chance) {
         super("<gradient:red:dark_red>Regen</gradient>", true, chance, PERIOD * INCREMENTS);
-    }
-
-    @Override
-    public BossAbility newInstance() {
-        return new RegenAbility();
     }
 
     @Override

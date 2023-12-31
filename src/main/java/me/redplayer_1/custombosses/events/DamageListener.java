@@ -15,8 +15,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -30,17 +28,13 @@ public class DamageListener implements Listener {
     static {
         // create a background task to periodically clean lastDamagers
         final long delay = 2;
-        Bukkit.getAsyncScheduler().runAtFixedRate(CustomBosses.getInstance(), (task) -> {
-            LinkedList<UUID> removalQueue = new LinkedList<>(); // use a queue to avoid a
-            for (Map.Entry<UUID, TimedPlayerDamager> entry : lastDamagers.entrySet()) {
-                if ((System.currentTimeMillis() - entry.getValue().timeMillis) > LAST_DAMAGE_LIFETIME) {
-                    removalQueue.add(entry.getKey());
-                }
-            }
-            for (UUID uuid : removalQueue) {
-                lastDamagers.remove(uuid);
-            }
-        }, delay, delay, TimeUnit.MINUTES);
+        Bukkit.getAsyncScheduler().runAtFixedRate(
+                CustomBosses.getInstance(),
+                task -> lastDamagers.entrySet().removeIf(
+                        entry -> System.currentTimeMillis() - entry.getValue().timeMillis > LAST_DAMAGE_LIFETIME),
+                delay,
+                delay,
+                TimeUnit.MINUTES);
     }
 
     @EventHandler
@@ -55,7 +49,7 @@ public class DamageListener implements Listener {
     }
 
     @EventHandler
-    public void onDeathByNPC(PlayerDeathEvent event) {
+    public void onDeathByBoss(PlayerDeathEvent event) {
         Player killed = event.getPlayer();
         if (killed.getLastDamageCause() == null || !(killed.getLastDamageCause().getEntity() instanceof LivingEntity)) {
             return;

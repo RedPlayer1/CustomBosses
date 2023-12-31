@@ -6,6 +6,7 @@ import me.redplayer_1.custombosses.boss.impl.Bob;
 import me.redplayer_1.custombosses.boss.impl.MinerZombie;
 import org.bukkit.Bukkit;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 
 public enum BossType {
@@ -32,7 +33,7 @@ public enum BossType {
     public Boss newInstance() {
         try {
             return clazz.getConstructor().newInstance();
-        } catch (Exception e) {
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             Bukkit.getLogger().severe("Boss subclass didn't have a no-argument constructor!");
             throw new RuntimeException(e);
         }

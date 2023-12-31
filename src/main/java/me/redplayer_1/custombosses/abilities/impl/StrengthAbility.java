@@ -1,6 +1,5 @@
 package me.redplayer_1.custombosses.abilities.impl;
 
-import me.redplayer_1.custombosses.abilities.BossAbility;
 import me.redplayer_1.custombosses.abilities.CooldownBossAbility;
 import me.redplayer_1.custombosses.boss.Boss;
 import org.bukkit.entity.Player;
@@ -22,11 +21,6 @@ public class StrengthAbility extends CooldownBossAbility {
     public StrengthAbility(double chance, int amplifier) {
         this(chance);
         this.amplifier = amplifier;
-    }
-
-    @Override
-    public BossAbility newInstance() {
-        return new FireRingAbility();
     }
 
     @Override

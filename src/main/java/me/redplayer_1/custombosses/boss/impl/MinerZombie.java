@@ -32,8 +32,8 @@ public class MinerZombie extends Boss {
                 1,
                 new RegenAbility(0.4),
                 new StasisAbility(0.9),
-                new InvincibilityAbility(0.7),
-                new MinionAbility(0.89)
+                new MinionAbility(0.89),
+                new InvincibilityAbility(0.7)
         );
     }
 

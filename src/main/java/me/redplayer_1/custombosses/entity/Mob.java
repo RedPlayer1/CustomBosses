@@ -155,11 +155,10 @@ public class Mob implements Listener {
      */
     public boolean kill(boolean force) {
         double prevHealth = health;
-        health = 0; // make isDead() return true
         MobDeathEvent event = new MobDeathEvent(this, DamageListener.getLastDamager(uuid));
-        event.callEvent();
-        if (force || !event.isCancelled()) {
+        if (force || event.callEvent()) {
             HandlerList.unregisterAll(this);
+            health = 0; // make isDead() return true
             entity.setHealth(0);
             hologram.delete();
         } else {
