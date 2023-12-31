@@ -7,7 +7,6 @@ import me.redplayer_1.custombosses.boss.BossDeathEvent;
 import me.redplayer_1.custombosses.util.MessageUtils;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -19,8 +18,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.UUID;
 
 public class MinionAbility extends CooldownBossAbility {
