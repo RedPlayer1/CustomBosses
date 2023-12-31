@@ -27,11 +27,6 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onMove(PlayerMoveEvent event) {
-        event.setCancelled(StasisAbility.handleMove(event.getPlayer()));
-    }
-
-    @EventHandler
     public void onPlace(BlockPlaceEvent event) {
         event.setCancelled(Trophy.isTrophy(event.getItemInHand()));
     }

@@ -21,7 +21,7 @@ public final class CustomBosses extends JavaPlugin {
     /*
     TODO:
     - PAPI Hook (boss kills/spawns (global & player specific))
-    - Hologram Hook (leaderboards)
+    - Hologram Hook (leaderboards) ^^
     - More Abilities
     - More Bosses
     - Spawn Eggs (custom attributes? / difficulty)

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -31,12 +32,12 @@ public class StasisAbility extends CooldownBossAbility {
         return true;
     }
 
-    @SuppressWarnings("deprecation")
-    public static boolean handleMove(Player p) {
-        return !p.isOnGround() && cache.contains(p);
-    }
-
     public static class StasisListener implements Listener {
+        @EventHandler
+        public void onPlayerMove(PlayerMoveEvent event) {
+            event.setCancelled(event.getTo().getY() > event.getFrom().getY() && cache.contains(event.getPlayer()));
+        }
+
         @EventHandler
         public void onPlayerDeath(PlayerDeathEvent event) {
             cache.remove(event.getPlayer()); // reset effects ability on death (slowness removed by default)
