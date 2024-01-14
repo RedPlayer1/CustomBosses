@@ -1,7 +1,6 @@
 package me.redplayer_1.custombosses.api;
 
 import me.redplayer_1.custombosses.CustomBosses;
-import me.redplayer_1.custombosses.boss.BossType;
 import me.redplayer_1.custombosses.config.Config;
 import me.redplayer_1.custombosses.config.ConfigMap;
 import org.bukkit.Bukkit;
@@ -17,19 +16,19 @@ import java.util.UUID;
 public class PlayerStats {
     private static Config globalConfig;
     private static final HashMap<UUID, PlayerStats> registry = new HashMap<>();
-    private static final ConfigMap<BossType, Integer> globalKills = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);
-    private static final ConfigMap<BossType, Integer> globalSpawns = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);
+    private static final ConfigMap<String, Integer> globalKills = new ConfigMap<>(s -> s, i -> Integer.toString(i), s -> s, Integer::valueOf);
+    private static final ConfigMap<String, Integer> globalSpawns = new ConfigMap<>(s -> s, i -> Integer.toString(i), s -> s, Integer::valueOf);
     private Config data;
     private final UUID uuid;
-    private final ConfigMap<BossType, Integer> bossKills = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);
-    private final ConfigMap<BossType, Integer> bossSpawns = new ConfigMap<>(Enum::name, i -> Integer.toString(i), BossType::valueOf, Integer::valueOf);
+    private final ConfigMap<String, Integer> bossKills = new ConfigMap<>(s -> s, i -> Integer.toString(i), s -> s, Integer::valueOf);
+    private final ConfigMap<String, Integer> bossSpawns = new ConfigMap<>(s -> s, i -> Integer.toString(i), s -> s, Integer::valueOf);
 
     static {
         // get global info from file
         try {
             globalConfig = new Config("GlobalStats");
-            globalSpawns.loadFrom(globalConfig, "Spawns", getDefaultDataTable());
-            globalKills.loadFrom(globalConfig, "Kills", getDefaultDataTable());
+            globalSpawns.loadFrom(globalConfig, "Spawns", new HashMap<>());
+            globalKills.loadFrom(globalConfig, "Kills", new HashMap<>());
         } catch (IOException | InvalidConfigurationException e) {
             Bukkit.getLogger().severe("Error whilst saving global data!");
         }
@@ -40,8 +39,8 @@ public class PlayerStats {
         try {
             // load data
             data = new Config("data" + File.separator + uuid);
-            bossSpawns.loadFrom(data, "Spawns", getDefaultDataTable());
-            bossKills.loadFrom(data, "Kills", getDefaultDataTable());
+            bossSpawns.loadFrom(data, "Spawns", new HashMap<>());
+            bossKills.loadFrom(data, "Kills", new HashMap<>());
 
         } catch (IOException e) {
             Bukkit.getLogger().severe("IOException whilst loading data for player " + uuid + "!");
@@ -57,7 +56,7 @@ public class PlayerStats {
      *
      * @param type the type of boss spawned
      */
-    public void incrementSpawn(BossType type) {
+    public void incrementSpawn(String type) {
         Integer val = bossSpawns.get(type);
         if (val == null) {
             bossSpawns.put(type, 1);
@@ -77,7 +76,7 @@ public class PlayerStats {
      *
      * @param type the type of boss killed
      */
-    public void incrementKill(BossType type) {
+    public void incrementKill(String type) {
         Integer val = bossKills.get(type);
         if (val == null) {
             bossKills.put(type, 1);
@@ -148,16 +147,5 @@ public class PlayerStats {
      */
     public static Map<UUID, PlayerStats> getRegistry() {
         return registry;
-    }
-
-    /**
-     * @return a map with all possible keys having the value 0
-     */
-    private static HashMap<BossType, Integer> getDefaultDataTable() {
-        HashMap<BossType, Integer> result = new HashMap<>();
-        for (BossType type : BossType.values()) {
-            result.put(type, 0);
-        }
-        return result;
     }
 }
