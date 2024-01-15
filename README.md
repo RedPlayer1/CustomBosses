@@ -27,7 +27,9 @@ See [boss_config.yml](/src/main/resources/boss_config.yml)
 
 ## ToDo
 (in no particular order)
-- [ ] Customizable Bosses (via a yaml file)
+- [x] Customizable Bosses (via a yaml file)
+- [ ] User defined abilities
+- [ ] PlaceholderAPI integration (for statistics)
 - [ ] Boss levels (scale health, damage, resistance, etc)
 - [ ] Custom items (armor & weapons)
 - [ ] New enchantments
