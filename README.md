@@ -18,8 +18,8 @@ As a player or console
 /bossEntity <TYPE> despawn
 ```
 
-## Boss Types
-See [the BossType enum](/src/main/java/me/redplayer_1/custombosses/bossEntity/BossType.java)
+## Builtin Boss Types
+See [boss_config.yml](/src/main/resources/boss_config.yml)
 - BASIC_ZOMBIE
 - BASIC_HUSK
 - MINER_ZOMBIE
