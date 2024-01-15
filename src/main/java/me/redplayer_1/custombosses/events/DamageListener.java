@@ -1,7 +1,7 @@
 package me.redplayer_1.custombosses.events;
 
 import me.redplayer_1.custombosses.CustomBosses;
-import me.redplayer_1.custombosses.boss.Boss;
+import me.redplayer_1.custombosses.boss.BossEntity;
 import me.redplayer_1.custombosses.entity.Mob;
 import me.redplayer_1.custombosses.util.MessageUtils;
 import me.redplayer_1.custombosses.util.SyntaxParser;
@@ -59,12 +59,12 @@ public class DamageListener implements Listener {
         if (killer == null) return;
 
         // alter the kill message if it's a boss
-        Boss boss = Boss.of(killer);
-        if (boss != null) {
+        BossEntity bossEntity = BossEntity.of(killer);
+        if (bossEntity != null) {
             // get the uuid from the boss's metadata
             event.deathMessage(MessageUtils.mmsgToComponent(
                     deathMsgParser.parse(CustomBosses.getInstance().getSettings().getConfig().getString("Boss.playerDeathMessage", ""),
-                            killed.getName(), boss.getConfig().name())
+                            killed.getName(), bossEntity.getConfig().getDisplayName())
             ));
         }
     }

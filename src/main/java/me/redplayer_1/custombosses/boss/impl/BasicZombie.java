@@ -23,19 +23,6 @@ public class BasicZombie implements Boss {
             List.of("<gray>Obtained from killing a <dark_green>Basic Zombie</dark_green>")
     );
 
-    /*
-    public BasicZombie() {
-        super(new BossConfig(
-                "ZOMBIE", BossType.BASIC_ZOMBIE, "Basic Zombie", 50, 15),
-                1,
-                new RegenAbility(0.2),
-                new ThunderstormAbility(0.8),
-                new InvincibilityAbility(0.9)
-        );
-    }
-
-     */
-
     public void onPreSpawn(Location spawnLocation, BossEntity.SpawnBuilder builder) {
         spawnLocation.getWorld().spawnParticle(Particle.CLOUD, spawnLocation, 50);
     }

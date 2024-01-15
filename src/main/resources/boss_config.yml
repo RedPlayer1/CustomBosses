@@ -1,0 +1,44 @@
+# Builtin Types
+Basic Zombie:
+  classpath: "me.redplayer_1.custombosses.boss.impl.BasicZombie"
+  entity_type: "ZOMBIE"
+  health: 50
+  attack_range: 15
+  abilities:
+    REGEN: .2
+    THUNDERSTORM: .8
+    INVINCIBILITY: .9
+
+Basic Husk:
+  classpath: "me.redplayer_1.custombosses.boss.impl.BasicHusk"
+  entity_type: "HUSK"
+  health: 100
+  attack_range: 20
+  abilities:
+    FIRE_RING: .4
+    STRENGTH: .9
+    THUNDERSTORM: .7
+    REGEN: .85
+
+Miner Zombie:
+  classpath: "me.redplayer_1.custombosses.boss.impl.MinerZombie"
+  entity_type: "ZOMBIE"
+  health: 150
+  attack_range: 20
+  abilities:
+    REGEN: .4
+    STASIS: .9
+    MINION: .89
+    INVINCIBILITY: .7
+
+Bob:
+  classpath: "me.redplayer_1.custombosses.boss.impl.Bob"
+  entity_type: "ZOMBIE"
+  health: 1000
+  attack_range: 30
+  abilities:
+    STASIS: .5
+    STRENGTH: .5
+    FIRE_RING: .5
+    MINION: .5
+    THUNDERSTORM: .5

@@ -1,14 +1,17 @@
 package me.redplayer_1.custombosses.abilities;
 
-import me.redplayer_1.custombosses.boss.Boss;
+import me.redplayer_1.custombosses.boss.BossEntity;
 import org.bukkit.entity.Player;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public abstract class BossAbility {
     // the number of ticks to wait before trying to use an ability
     public static final long DEFAULT_USAGE_DELAY = 60L;
-
     // Format w/ boss name, ability name, target name
     public static final String USAGE_MESSAGE = "<red>%s</red> used %s";
+    public static final Set<BossAbility> ABILITIES = new HashSet<>();
 
     private final String name;
     private final boolean singleTarget;
@@ -18,18 +21,17 @@ public abstract class BossAbility {
         this.name = name;
         this.singleTarget = singleTarget;
         this.chance = chance;
+        ABILITIES.add(this);
     }
-
-    //public abstract BossAbility newInstance();
 
     /**
      * Fired when an entity attacks and this ability was chosen
      *
-     * @param boss   the boss using the ability
+     * @param bossEntity   the boss using the ability
      * @param target the player the ability is being used on
      * @return whether the ability was activated successfully (if not, a new one is chosen)
      */
-    public abstract boolean use(Boss boss, Player target);
+    public abstract boolean use(BossEntity bossEntity, Player target);
 
     /**
      * Whether the ability should be used on all surrounding entities or just one

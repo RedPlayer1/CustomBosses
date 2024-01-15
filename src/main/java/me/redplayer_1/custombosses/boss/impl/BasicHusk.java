@@ -22,20 +22,6 @@ public class BasicHusk implements Boss {
             List.of("<gray>Obtained from killing a <color:#ff5c26>Basic Husk</color>")
     );
 
-    /*
-    public BasicHusk() {
-        super(
-                new BossConfig("HUSK", BossType.BASIC_HUSK, "Basic Husk", 100, 20),
-                1,
-                new FireRingAbility(0.4),
-                new StrengthAbility(0.9, 7),
-                new ThunderstormAbility(0.7),
-                new RegenAbility()
-        );
-    }
-
-     */
-
     public void onPreSpawn(Location spawnLocation, BossEntity.SpawnBuilder builder) {
         spawnLocation.getWorld().playSound(spawnLocation, Sound.ENTITY_TNT_PRIMED, 1, 1);
         builder.addDelay(25);

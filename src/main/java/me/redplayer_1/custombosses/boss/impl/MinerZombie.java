@@ -21,18 +21,6 @@ public class MinerZombie implements Boss {
             List.of("<gray>Obtained from killing a <dark_green><i>Miner Zombie</i></dark_green>")
     );
 
-    /*
-    public MinerZombie() {
-        super(new BossConfig(
-                "ZOMBIE", BossType.MINER_ZOMBIE, "Miner Zombie", 150, 20),
-                1,
-                new RegenAbility(0.4),
-                new StasisAbility(0.9),
-                new MinionAbility(0.89),
-                new InvincibilityAbility(0.7)
-        );
-    }
-*/
     public void onPreSpawn(Location spawnLocation, BossEntity.SpawnBuilder builder) {
 
     }

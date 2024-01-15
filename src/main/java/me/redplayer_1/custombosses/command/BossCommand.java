@@ -1,7 +1,7 @@
 package me.redplayer_1.custombosses.command;
 
-import me.redplayer_1.custombosses.boss.Boss;
-import me.redplayer_1.custombosses.boss.BossType;
+import me.redplayer_1.custombosses.boss.BossEntity;
+import me.redplayer_1.custombosses.config.providers.BossConfig;
 import me.redplayer_1.custombosses.util.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,46 +23,40 @@ public class BossCommand extends Command {
         if (args.length < 2) return false;
         if (args[1].equalsIgnoreCase("despawn")) {
             // despawn all bosses of that type
-            String targetBoss = BossType.valueOf(args[0].toUpperCase()).name();
-            List<Boss> despawnQueue = new LinkedList<>();
+            List<UUID> despawnQueue = new LinkedList<>();
 
-            for (Map.Entry<UUID, Boss> i : Boss.getRegistry().entrySet()) {
-                if (targetBoss.equalsIgnoreCase(args[0])) {
-                    despawnQueue.add(i.getValue());
+            for (Map.Entry<UUID, BossEntity> i : BossEntity.getRegistry().entrySet()) {
+                if (args[0].equals(i.getValue().getConfig().getBossType())) {
+                    despawnQueue.add(i.getKey());
                 }
             }
-            for (Boss i : despawnQueue) {
-                i.despawn();
+            for (UUID i : despawnQueue) {
+                BossEntity.getRegistry().remove(i).despawn();
             }
         }
         if (sender instanceof Player player && args[1].equalsIgnoreCase("spawn")) {
             // spawn a new boss of that type
-            try {
-                Boss boss = BossType.valueOf(args[0].toUpperCase()).newInstance();
-                player.sendMessage(MessageUtils.mmsgToComponent("<gray>Spawning a <red><i>" + boss.getConfig().name() + "."));
-                boss.spawn(player.getLocation(), player);
-            } catch (IllegalArgumentException e) {
-                player.sendPlainMessage("Invalid Name!");
-                return false;
-            }
-        } else {
+            BossConfig config = BossConfig.getType(args[0]);
+            if (config == null) return false; // type wasn't registered
+            BossEntity bossEntity = new BossEntity(config, 1);
+            player.sendMessage(MessageUtils.mmsgToComponent("<gray>Spawning a <red><i>" + bossEntity.getConfig().getDisplayName() + "."));
+            bossEntity.spawn(player.getLocation(), player);
+        } else if (args[1].equalsIgnoreCase("spawn")){
             // coords must be specified if used from console (arg 2-5)
             // x, y, z, world
             if (args.length < 6) return false;
-            int[] coords = new int[]{
-                    Integer.parseInt(args[2]),
-                    Integer.parseInt(args[3]),
-                    Integer.parseInt(args[4])
-            };
-            if (args[1].equalsIgnoreCase("spawn")) {
-                try {
-                    BossType.valueOf(args[0].toUpperCase()).newInstance().spawn(
-                            new Location(Bukkit.getWorld(args[5]), coords[0], coords[1], coords[2]),
-                            null
-                    );
-                } catch (NullPointerException | NumberFormatException ignored) {
-                    return false;
-                }
+            try {
+                int[] coords = new int[]{
+                        Integer.parseInt(args[2]),
+                        Integer.parseInt(args[3]),
+                        Integer.parseInt(args[4])
+                };
+                new BossEntity(Objects.requireNonNull(BossConfig.getType(args[0])), 1).spawn(
+                        new Location(Bukkit.getWorld(args[5]), coords[0], coords[1], coords[2]),
+                        null
+                );
+            } catch (NullPointerException | NumberFormatException ignored) {
+                return false;
             }
         }
         return true;
@@ -71,7 +65,7 @@ public class BossCommand extends Command {
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
         if (args.length == 1) {
-            return List.of(BossType.values);
+            return BossConfig.getRegisteredTypes().stream().toList();
         } else if (args.length == 2) {
             return List.of("spawn", "despawn");
         } else {

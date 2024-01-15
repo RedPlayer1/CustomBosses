@@ -12,21 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class Bob implements Boss {
-    /*
-    public Bob() {
-        super(
-                new BossConfig("ZOMBIE", BossType.BOB, "Bob", 1000, 30),
-                1,
-                new StasisAbility(0),
-                new StrengthAbility(0),
-                new FireRingAbility(0),
-                new MinionAbility(),
-                new ThunderstormAbility(0)
-        );
-    }
-
-     */
-
     public void onPreSpawn(Location spawnLocation, BossEntity.SpawnBuilder builder) {}
 
     public void onSpawn(BossEntity boss) {
