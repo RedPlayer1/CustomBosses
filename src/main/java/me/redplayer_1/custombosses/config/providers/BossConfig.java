@@ -98,6 +98,7 @@ public final class BossConfig {
                 getValue("attack_range", section::getString, range -> bossConfig.attackRange = Double.parseDouble(range));
                 getValue("abilities", section::getConfigurationSection, aSection -> {
                     for (String abilityName : aSection.getKeys(false)) {
+                        if (abilityName.equalsIgnoreCase("none")) break;
                         Abilities ability = Abilities.valueOf(abilityName.toUpperCase());
                         ability.setChance(aSection.getDouble(abilityName));
                         bossConfig.abilities.add(ability);
