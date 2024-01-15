@@ -3,9 +3,10 @@ package me.redplayer_1.custombosses;
 import me.redplayer_1.custombosses.abilities.impl.MinionAbility;
 import me.redplayer_1.custombosses.abilities.impl.StasisAbility;
 import me.redplayer_1.custombosses.api.PlayerStats;
-import me.redplayer_1.custombosses.boss.Boss;
+import me.redplayer_1.custombosses.boss.BossEntity;
 import me.redplayer_1.custombosses.command.BossCommand;
 import me.redplayer_1.custombosses.config.Config;
+import me.redplayer_1.custombosses.config.providers.BossConfig;
 import me.redplayer_1.custombosses.events.BossListener;
 import me.redplayer_1.custombosses.events.DamageListener;
 import me.redplayer_1.custombosses.events.PlayerListener;
@@ -37,22 +38,28 @@ public final class CustomBosses extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        // load settings
+        // Settings/Config
         try {
             settings = new Config("settings");
         } catch (IOException | InvalidConfigurationException e) {
-            getLogger().severe("Something went wrong while loading the config! Make sure it contains valid syntax. \n(" + e.getMessage() + ")");
+            getLogger().severe("Something went wrong while loading the config! Make sure it contains valid syntax.\n(" + e.getMessage() + ")");
             getServer().getPluginManager().disablePlugin(this);
             return;
+        }
+        //  boss types
+        try {
+            BossConfig.loadFrom(new Config("boss_config"));
+        } catch (IOException | InvalidConfigurationException e) {
+            Bukkit.getLogger().severe("Couldn't load the 'boss_config.yml'! Ensure you have a stable build and report it if the issue persists.\n(" + e.getMessage() + ")");
         }
 
         // Listeners
         PluginManager manager = getServer().getPluginManager();
-        // dedicated classes
+        //  dedicated classes
         manager.registerEvents(new DamageListener(), this);
         manager.registerEvents(new PlayerListener(), this);
         manager.registerEvents(new BossListener(), this);
-        // abilities
+        //  abilities
         manager.registerEvents(new StasisAbility.StasisListener(), this);
         manager.registerEvents(new MinionAbility.MinionListener(), this);
 
@@ -65,9 +72,9 @@ public final class CustomBosses extends JavaPlugin {
         // Bosses shouldn't persist shutdowns
         getLogger().info("Removing all spawned bosses. . .");
 
-        List<Boss> despawnQueue = Boss.getRegistry().values().stream().toList();
-        for (Boss boss : despawnQueue) {
-            boss.despawn();
+        List<BossEntity> despawnQueue = BossEntity.getRegistry().values().stream().toList();
+        for (BossEntity bossEntity : despawnQueue) {
+            bossEntity.despawn();
         }
 
         // save stats

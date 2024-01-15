@@ -1,9 +1,7 @@
 package me.redplayer_1.custombosses.boss.impl;
 
-import me.redplayer_1.custombosses.abilities.impl.*;
-import me.redplayer_1.custombosses.boss.Boss;
-import me.redplayer_1.custombosses.boss.BossType;
-import me.redplayer_1.custombosses.config.providers.BossConfig;
+import me.redplayer_1.custombosses.api.Boss;
+import me.redplayer_1.custombosses.boss.BossEntity;
 import me.redplayer_1.custombosses.util.ItemUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,7 +11,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Bob extends Boss {
+public class Bob implements Boss {
+    /*
     public Bob() {
         super(
                 new BossConfig("ZOMBIE", BossType.BOB, "Bob", 1000, 30),
@@ -26,15 +25,13 @@ public class Bob extends Boss {
         );
     }
 
-    @Override
-    public void onPreSpawn(Location spawnLocation, SpawnBuilder builder) {
+     */
 
-    }
+    public void onPreSpawn(Location spawnLocation, BossEntity.SpawnBuilder builder) {}
 
-    @Override
-    public void onSpawn() {
+    public void onSpawn(BossEntity boss) {
         ItemUtils.applyEquipment(
-                getMob().getEntity(),
+                boss.getMob().getEntity(),
                 0,
                 new ItemStack(Material.NETHERITE_HELMET),
                 ItemUtils.createItem(Material.NETHERITE_CHESTPLATE, null, null, true, true, new ItemUtils.Enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 4)),
@@ -44,7 +41,5 @@ public class Bob extends Boss {
                 null);
     }
 
-    @Override
-    public void onKill(@NotNull Location location, @Nullable LivingEntity killer) {
-    }
+    public void onKill(@NotNull Location location, @Nullable LivingEntity killer) {}
 }

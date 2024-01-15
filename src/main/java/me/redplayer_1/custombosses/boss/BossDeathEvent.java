@@ -8,19 +8,19 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Fired when a {@link Boss} is killed.
+ * Fired when a {@link BossEntity} is killed.
  */
 public class BossDeathEvent extends Event implements Cancellable {
     private static final HandlerList HANDLER_LIST = new HandlerList();
     private boolean cancelled = false;
-    private final Boss killed;
+    private final BossEntity killed;
     private final Entity killer;
 
     /**
      * @param killed the killed Boss
      * @param killer the entity that killed the Boss
      */
-    public BossDeathEvent(@NotNull Boss killed, @Nullable Entity killer) {
+    public BossDeathEvent(@NotNull BossEntity killed, @Nullable Entity killer) {
         this.killed = killed;
         this.killer = killer;
     }
@@ -28,7 +28,7 @@ public class BossDeathEvent extends Event implements Cancellable {
     /**
      * @return The Boss that was killed
      */
-    public Boss getKilled() {
+    public BossEntity getKilled() {
         return killed;
     }
 

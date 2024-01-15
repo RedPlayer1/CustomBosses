@@ -1,7 +1,7 @@
 package me.redplayer_1.custombosses.abilities.impl;
 
 import me.redplayer_1.custombosses.abilities.CooldownBossAbility;
-import me.redplayer_1.custombosses.boss.Boss;
+import me.redplayer_1.custombosses.boss.BossEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -24,8 +24,8 @@ public class StrengthAbility extends CooldownBossAbility {
     }
 
     @Override
-    public boolean use(Boss boss, Player target) {
-        boss.getMob().getEntity().addPotionEffect(
+    public boolean use(BossEntity bossEntity, Player target) {
+        bossEntity.getMob().getEntity().addPotionEffect(
                 new PotionEffect(PotionEffectType.INCREASE_DAMAGE, DURATION, amplifier, false, true)
         );
         return true;

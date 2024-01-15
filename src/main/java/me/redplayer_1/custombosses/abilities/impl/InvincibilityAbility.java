@@ -2,7 +2,7 @@ package me.redplayer_1.custombosses.abilities.impl;
 
 import me.redplayer_1.custombosses.CustomBosses;
 import me.redplayer_1.custombosses.abilities.CooldownBossAbility;
-import me.redplayer_1.custombosses.boss.Boss;
+import me.redplayer_1.custombosses.boss.BossEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -29,21 +29,21 @@ public class InvincibilityAbility extends CooldownBossAbility {
 
 
     @Override
-    public boolean use(Boss boss, Player target) {
+    public boolean use(BossEntity bossEntity, Player target) {
         AtomicInteger tickCount = new AtomicInteger();
         Particle.DustOptions dustOptions = new Particle.DustOptions(Color.GREEN, 1);
 
-        boss.getMob().setInvincible(TICK_DURATION);
+        bossEntity.getMob().setInvincible(TICK_DURATION);
         // add slowness to make the particles look better
-        boss.getMob().getEntity().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, TICK_DURATION, 10, false, false));
+        bossEntity.getMob().getEntity().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, TICK_DURATION, 10, false, false));
 
         Bukkit.getScheduler().runTaskTimer(CustomBosses.getInstance(), task -> {
-            if (tickCount.get() > TICK_DURATION || boss.getMob().isDead()) {
+            if (tickCount.get() > TICK_DURATION || bossEntity.getMob().isDead()) {
                 task.cancel();
                 return;
             }
             // create a double helix
-            Location loc = boss.getLocation();
+            Location loc = bossEntity.getLocation();
             for (double y = 0; y < 3; y += 0.5) {
                 double x = RADIUS * Math.cos(tickCount.get() + y);
                 double z = RADIUS * Math.sin(tickCount.get() + y);

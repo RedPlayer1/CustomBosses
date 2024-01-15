@@ -1,7 +1,7 @@
 package me.redplayer_1.custombosses.abilities.impl;
 
 import me.redplayer_1.custombosses.abilities.BossAbility;
-import me.redplayer_1.custombosses.boss.Boss;
+import me.redplayer_1.custombosses.boss.BossEntity;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -19,8 +19,8 @@ public class FireRingAbility extends BossAbility {
     }
 
     @Override
-    public boolean use(Boss boss, Player target) {
-        Location bossLoc = boss.getLocation();
+    public boolean use(BossEntity bossEntity, Player target) {
+        Location bossLoc = bossEntity.getLocation();
         if (bossLoc == null) return false;
         int radius = 5;
 

@@ -15,42 +15,25 @@ import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-/**
- * The root class for all Bosses. For any subclass in {@link BossType}, it must have a no-argument constructor.
- * The recommended approach is:
- * <pre>{@code
- * public class MyBoss extends Boss {
- *     public MyBoss() {
- *         super(args...);
- *     }
- * }
- * }</pre>
- */
-public abstract class Boss {
+public class BossEntity {
     private static final Random random = new Random();
-    private static final HashMap<UUID, Boss> registry = new HashMap<>();
+    private static final HashMap<UUID, BossEntity> registry = new HashMap<>();
     private final SyntaxParser msgParser = new SyntaxParser(new String[]{"{player}", "{boss}"});
     private Mob entity;
-    private List<BossAbility> abilities;
+    private final List<BossAbility> abilities = new ArrayList<>();
     private final BossConfig config;
     private final int level;
 
-    public Boss(BossConfig config, int level, BossAbility... abilities) {
+    public BossEntity(BossConfig config, int level) {
         this.config = config;
         this.level = level;
-        this.abilities = Arrays.stream(abilities).toList();
-    }
-
-    public void addAbility(BossAbility ability) {
-        abilities.add(ability);
+        config.getAbilities().forEach(ability -> this.abilities.add(ability.create()));
     }
 
     /**
@@ -61,19 +44,20 @@ public abstract class Boss {
      */
     public final void spawn(Location loc, @Nullable Entity spawner) {
         SpawnBuilder builder = new SpawnBuilder();
-        onPreSpawn(loc, builder);
+        config.doIfBoss(boss -> boss.onPreSpawn(loc, builder));
         Bukkit.getScheduler().runTaskLater(CustomBosses.getInstance(), mainTask -> {
-            entity = new Mob(config.name(), EntityType.valueOf(config.entityType()), loc, config.health(), true, 4, true);
+            entity = new Mob(config.getDisplayName(), config.getEntityType(), loc, config.getHealth(), true, config.getAttackRange(), true);
+            entity.setDamageScalar(config.getDamageScalar());
             registerBoss(this);
 
             // stat increment
             if (spawner != null) {
                 PlayerStats stats = PlayerStats.getRegistry().get(spawner.getUniqueId());
                 if (stats != null) {
-                    stats.incrementSpawn(config.bossType());
+                    stats.incrementSpawn(config.getBossType());
                 }
             }
-            onSpawn();
+            config.doIfBoss(boss -> boss.onSpawn(this));
             // make it harder for players to constantly knock Boss back & avoid damage
             entity.getEntity().getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.6);
 
@@ -91,9 +75,9 @@ public abstract class Boss {
             if (settings.getBoolean("Boss.broadcastSpawn")) {
                 String broadcastMsg;
                 if (spawner != null) {
-                    broadcastMsg = msgParser.parse(settings.getString("Boss.spawnBroadcastMessagePlayer"), spawner.getName(), config.name());
+                    broadcastMsg = msgParser.parse(settings.getString("Boss.spawnBroadcastMessagePlayer"), spawner.getName(), config.getDisplayName());
                 } else {
-                    broadcastMsg = msgParser.parse(settings.getString("Boss.spawnBroadcastMessageAnonymous"), null, config.name());
+                    broadcastMsg = msgParser.parse(settings.getString("Boss.spawnBroadcastMessageAnonymous"), null, config.getDisplayName());
                 }
                 Bukkit.broadcast(MessageUtils.mmsgToComponent(broadcastMsg));
             }
@@ -103,7 +87,7 @@ public abstract class Boss {
 
     /**
      * Despawns the boss. This will destroy the boss and its related data.
-     * @see Boss#kill(LivingEntity)
+     * @see BossEntity#kill(LivingEntity)
      */
     public final void despawn() {
         if (!entity.isDead()) {
@@ -113,7 +97,7 @@ public abstract class Boss {
     }
 
     /**
-     * Kills and automatically {@link Boss#despawn() despawns} the boss.
+     * Kills and automatically {@link BossEntity#despawn() despawns} the boss.
      * @param killer the entity who killed the boss
      */
     public final void kill(@Nullable LivingEntity killer) {
@@ -125,13 +109,13 @@ public abstract class Boss {
                 deathMsg = msgParser.parse(
                         settings.getString("Boss.deathBroadcastMessagePlayer"),
                         killer.getName(),
-                        config.name()
+                        config.getDisplayName()
                 );
             } else {
                 deathMsg = msgParser.parse(
                         settings.getString("Boss.deathBroadcastMessageAnonymous"),
                         null,
-                        config.name()
+                        config.getDisplayName()
                 );
             }
             Bukkit.broadcast(MessageUtils.mmsgToComponent(deathMsg));
@@ -140,10 +124,10 @@ public abstract class Boss {
         if (killer != null) {
             PlayerStats stats = PlayerStats.getRegistry().get(killer.getUniqueId());
             if (stats != null) {
-                stats.incrementKill(config.bossType());
+                stats.incrementKill(config.getBossType());
             }
         }
-        onKill(entity.getLocation(), killer);
+        config.doIfBoss(boss -> boss.onKill(entity.getLocation(), killer));
         despawn();
     }
 
@@ -159,20 +143,20 @@ public abstract class Boss {
                 // give resistance so the boss won't kill itself
                 if (!ability.isSingleTarget()) {
                     // use ability on all players in range
-                    for (Player p : entity.getLocation().getNearbyPlayers(config.attackRange(), player -> player.getGameMode() == GameMode.SURVIVAL)) {
+                    for (Player p : entity.getLocation().getNearbyPlayers(config.getAttackRange(), player -> player.getGameMode() == GameMode.SURVIVAL)) {
                         ability.use(this, p);
                         p.sendActionBar(
-                                MessageUtils.mmsgToComponent(String.format(BossAbility.USAGE_MESSAGE, config.name(), ability.getName()))
+                                MessageUtils.mmsgToComponent(String.format(BossAbility.USAGE_MESSAGE, config.getPlainName(), ability.getName()))
                         );
                     }
                 } else {
                     // use ability on closest player (in range)
-                    Player player = LocationUtils.getClosestPlayer(entity.getLocation(), true, config.attackRange());
+                    Player player = LocationUtils.getClosestPlayer(entity.getLocation(), true, config.getAttackRange());
                     if (player == null) return;
 
                     ability.use(this, player);
                     player.sendActionBar(
-                            MessageUtils.mmsgToComponent(String.format(BossAbility.USAGE_MESSAGE, config.name(), ability.getName()))
+                            MessageUtils.mmsgToComponent(String.format(BossAbility.USAGE_MESSAGE, config.getPlainName(), ability.getName()))
                     );
                 }
                 return;
@@ -180,41 +164,22 @@ public abstract class Boss {
         }
     }
 
-    /**
-     * Called before the Boss is spawned. The entity representing the Boss doesn't exist yet.
-     *
-     * @param spawnLocation the location that the Boss will spawn
-     */
-    public abstract void onPreSpawn(Location spawnLocation, SpawnBuilder builder);
-
-    /**
-     * Called after the Boss is spawned. The entity representing this Boss will not be null.
-     */
-    public abstract void onSpawn();
-
-    /**
-     * Fired when the Boss is killed. The entity corresponding to this Boss will be null.
-     * @param location the location of the Boss when it was killed
-     * @param killer the entity that killed the Boss
-     */
-    public abstract void onKill(@NotNull Location location, @Nullable LivingEntity killer);
-
-    public static void registerBoss(Boss boss) {
-        registry.put(boss.entity.getUuid(), boss);
+    public static void registerBoss(BossEntity bossEntity) {
+        registry.put(bossEntity.entity.getUuid(), bossEntity);
     }
 
-    public static void unregisterBoss(Boss boss) {
-        registry.remove(boss.entity.getUuid());
+    public static void unregisterBoss(BossEntity bossEntity) {
+        registry.remove(bossEntity.entity.getUuid());
     }
 
     /**
      * @param uuid the UUID of the {@link Mob} that represents this Boss
      */
-    public static @Nullable Boss getBoss(UUID uuid) {
+    public static @Nullable BossEntity getBoss(UUID uuid) {
         return registry.get(uuid);
     }
 
-    public static HashMap<UUID, Boss> getRegistry() {
+    public static HashMap<UUID, BossEntity> getRegistry() {
         return registry;
     }
 
@@ -252,7 +217,7 @@ public abstract class Boss {
         return registry.containsKey(mob.getUuid());
     }
 
-    public static @Nullable Boss of(Entity entity) {
+    public static @Nullable BossEntity of(Entity entity) {
         if (!(entity instanceof LivingEntity)) return null;
         Mob mob = Mob.fromBukkit((LivingEntity) entity);
         if (mob != null && registry.containsKey(mob.getUuid())) {
@@ -261,7 +226,7 @@ public abstract class Boss {
         return null;
     }
 
-    public static @Nullable Boss of(Mob mob) {
+    public static @Nullable BossEntity of(Mob mob) {
         return registry.get(mob.getUuid());
     }
 

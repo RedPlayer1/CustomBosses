@@ -1,13 +1,8 @@
 package me.redplayer_1.custombosses.boss.impl;
 
-import me.redplayer_1.custombosses.abilities.impl.FireRingAbility;
-import me.redplayer_1.custombosses.abilities.impl.RegenAbility;
-import me.redplayer_1.custombosses.abilities.impl.StrengthAbility;
-import me.redplayer_1.custombosses.abilities.impl.ThunderstormAbility;
-import me.redplayer_1.custombosses.boss.Boss;
-import me.redplayer_1.custombosses.boss.BossType;
+import me.redplayer_1.custombosses.api.Boss;
+import me.redplayer_1.custombosses.boss.BossEntity;
 import me.redplayer_1.custombosses.boss.Trophy;
-import me.redplayer_1.custombosses.config.providers.BossConfig;
 import me.redplayer_1.custombosses.util.ItemUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,13 +15,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class BasicHusk extends Boss {
+public class BasicHusk implements Boss {
     private static final ItemStack TROPHY = new Trophy(
             Material.DEAD_BUSH,
             "<gradient:#ff5c26:yellow>Basic Husk Trophy</gradient>",
             List.of("<gray>Obtained from killing a <color:#ff5c26>Basic Husk</color>")
     );
 
+    /*
     public BasicHusk() {
         super(
                 new BossConfig("HUSK", BossType.BASIC_HUSK, "Basic Husk", 100, 20),
@@ -38,16 +34,16 @@ public class BasicHusk extends Boss {
         );
     }
 
-    @Override
-    public void onPreSpawn(Location spawnLocation, SpawnBuilder builder) {
+     */
+
+    public void onPreSpawn(Location spawnLocation, BossEntity.SpawnBuilder builder) {
         spawnLocation.getWorld().playSound(spawnLocation, Sound.ENTITY_TNT_PRIMED, 1, 1);
         builder.addDelay(25);
     }
 
-    @Override
-    public void onSpawn() {
-        getMob().setDamageScalar(0.6); // only take 60% damage
-        EntityEquipment equipment = getMob().getEntity().getEquipment();
+    public void onSpawn(BossEntity boss) {
+        boss.getMob().setDamageScalar(0.6); // only take 60% damage - FIXME
+        EntityEquipment equipment = boss.getMob().getEntity().getEquipment();
         assert equipment != null;
 
         // give armor that won't drop
@@ -61,7 +57,6 @@ public class BasicHusk extends Boss {
         equipment.setBootsDropChance(0);
     }
 
-    @Override
     public void onKill(@NotNull Location location, @Nullable LivingEntity killer) {
         ItemUtils.giveOrDrop(killer, location, TROPHY);
     }

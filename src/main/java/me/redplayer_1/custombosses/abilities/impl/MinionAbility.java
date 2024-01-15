@@ -2,8 +2,8 @@ package me.redplayer_1.custombosses.abilities.impl;
 
 import me.redplayer_1.custombosses.CustomBosses;
 import me.redplayer_1.custombosses.abilities.CooldownBossAbility;
-import me.redplayer_1.custombosses.boss.Boss;
 import me.redplayer_1.custombosses.boss.BossDeathEvent;
+import me.redplayer_1.custombosses.boss.BossEntity;
 import me.redplayer_1.custombosses.util.MessageUtils;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -34,11 +34,11 @@ public class MinionAbility extends CooldownBossAbility {
     }
 
     @Override
-    public boolean use(Boss boss, Player target) {
-        Location loc = boss.getLocation();
+    public boolean use(BossEntity bossEntity, Player target) {
+        Location loc = bossEntity.getLocation();
 
         if (loc == null) return false;
-        HashMap<Integer, LivingEntity> localMinions = minions.get(boss.getMob().getUuid());
+        HashMap<Integer, LivingEntity> localMinions = minions.get(bossEntity.getMob().getUuid());
         if (localMinions == null) localMinions = new HashMap<>();
 
         for (int index = 0; index < AMOUNT; index++) {
@@ -48,12 +48,12 @@ public class MinionAbility extends CooldownBossAbility {
                 entity.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION, 1, false, false));
                 entity.customName(MessageUtils.mmsgToComponent(getName()));
                 entity.setCustomNameVisible(true);
-                entity.getPersistentDataContainer().set(KEY, PersistentDataType.STRING, boss.getMob().getUuid().toString() + ":" + index);
+                entity.getPersistentDataContainer().set(KEY, PersistentDataType.STRING, bossEntity.getMob().getUuid().toString() + ":" + index);
                 localMinions.put(index, entity);
             }
         }
 
-        minions.put(boss.getMob().getUuid(), localMinions);
+        minions.put(bossEntity.getMob().getUuid(), localMinions);
         return true;
     }
 

@@ -1,13 +1,8 @@
 package me.redplayer_1.custombosses.boss.impl;
 
-import me.redplayer_1.custombosses.abilities.impl.InvincibilityAbility;
-import me.redplayer_1.custombosses.abilities.impl.MinionAbility;
-import me.redplayer_1.custombosses.abilities.impl.RegenAbility;
-import me.redplayer_1.custombosses.abilities.impl.StasisAbility;
-import me.redplayer_1.custombosses.boss.Boss;
-import me.redplayer_1.custombosses.boss.BossType;
+import me.redplayer_1.custombosses.api.Boss;
+import me.redplayer_1.custombosses.boss.BossEntity;
 import me.redplayer_1.custombosses.boss.Trophy;
-import me.redplayer_1.custombosses.config.providers.BossConfig;
 import me.redplayer_1.custombosses.util.ItemUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,13 +14,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MinerZombie extends Boss {
+public class MinerZombie implements Boss {
     private static final ItemStack TROPHY = new Trophy(
             Material.SEA_LANTERN,
             "<dark_green>Miner Zombie Trophy</dark_green>",
             List.of("<gray>Obtained from killing a <dark_green><i>Miner Zombie</i></dark_green>")
     );
 
+    /*
     public MinerZombie() {
         super(new BossConfig(
                 "ZOMBIE", BossType.MINER_ZOMBIE, "Miner Zombie", 150, 20),
@@ -36,15 +32,13 @@ public class MinerZombie extends Boss {
                 new InvincibilityAbility(0.7)
         );
     }
-
-    @Override
-    public void onPreSpawn(Location spawnLocation, SpawnBuilder builder) {
+*/
+    public void onPreSpawn(Location spawnLocation, BossEntity.SpawnBuilder builder) {
 
     }
 
-    @Override
-    public void onSpawn() {
-        EntityEquipment equipment = getMob().getEntity().getEquipment();
+    public void onSpawn(BossEntity boss) {
+        EntityEquipment equipment = boss.getMob().getEntity().getEquipment();
         assert equipment != null;
 
         equipment.setHelmet(new ItemStack(Material.SEA_LANTERN));
@@ -60,7 +54,6 @@ public class MinerZombie extends Boss {
         equipment.setItemInMainHandDropChance(0);
     }
 
-    @Override
     public void onKill(@NotNull Location location, @Nullable LivingEntity killer) {
         ItemUtils.giveOrDrop(killer, location, TROPHY);
     }

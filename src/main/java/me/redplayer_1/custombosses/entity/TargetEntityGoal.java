@@ -4,7 +4,7 @@ import com.destroystokyo.paper.entity.ai.Goal;
 import com.destroystokyo.paper.entity.ai.GoalKey;
 import com.destroystokyo.paper.entity.ai.GoalType;
 import me.redplayer_1.custombosses.CustomBosses;
-import me.redplayer_1.custombosses.boss.Boss;
+import me.redplayer_1.custombosses.boss.BossEntity;
 import me.redplayer_1.custombosses.util.LocationUtils;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
@@ -78,7 +78,7 @@ public class TargetEntityGoal implements Goal<Mob> {
         if (!target.isValid() || target.equals(parent) || !target.getWorld().equals(parent.getWorld())) return false;
         if (target instanceof Player p)
             return p.getGameMode() != GameMode.CREATIVE && p.getGameMode() != GameMode.SPECTATOR;
-        else return !Boss.isBoss(target);
+        else return !BossEntity.isBoss(target);
     }
 
     public void setTarget(LivingEntity target) {

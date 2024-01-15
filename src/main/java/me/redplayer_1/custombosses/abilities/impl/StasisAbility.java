@@ -1,7 +1,7 @@
 package me.redplayer_1.custombosses.abilities.impl;
 
 import me.redplayer_1.custombosses.abilities.CooldownBossAbility;
-import me.redplayer_1.custombosses.boss.Boss;
+import me.redplayer_1.custombosses.boss.BossEntity;
 import me.redplayer_1.custombosses.util.CachedList;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,7 +25,7 @@ public class StasisAbility extends CooldownBossAbility {
     }
 
     @Override
-    public boolean use(Boss boss, Player target) {
+    public boolean use(BossEntity bossEntity, Player target) {
         target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, DURATION * 20, 69, false, true, false));
         cache.add(target);
         // TODO: add particle (helix/sphere around affected players)

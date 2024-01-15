@@ -1,12 +1,8 @@
 package me.redplayer_1.custombosses.boss.impl;
 
-import me.redplayer_1.custombosses.abilities.impl.InvincibilityAbility;
-import me.redplayer_1.custombosses.abilities.impl.RegenAbility;
-import me.redplayer_1.custombosses.abilities.impl.ThunderstormAbility;
-import me.redplayer_1.custombosses.boss.Boss;
-import me.redplayer_1.custombosses.boss.BossType;
+import me.redplayer_1.custombosses.api.Boss;
+import me.redplayer_1.custombosses.boss.BossEntity;
 import me.redplayer_1.custombosses.boss.Trophy;
-import me.redplayer_1.custombosses.config.providers.BossConfig;
 import me.redplayer_1.custombosses.util.ItemUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,13 +16,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class BasicZombie extends Boss {
+public class BasicZombie implements Boss {
     private static final ItemStack TROPHY = new Trophy(
             Material.ZOMBIE_HEAD,
             "<gradient:dark_green:#4dff00>Basic Zombie Trophy</gradient>",
             List.of("<gray>Obtained from killing a <dark_green>Basic Zombie</dark_green>")
     );
 
+    /*
     public BasicZombie() {
         super(new BossConfig(
                 "ZOMBIE", BossType.BASIC_ZOMBIE, "Basic Zombie", 50, 15),
@@ -37,20 +34,19 @@ public class BasicZombie extends Boss {
         );
     }
 
-    @Override
-    public void onPreSpawn(Location spawnLocation, SpawnBuilder builder) {
+     */
+
+    public void onPreSpawn(Location spawnLocation, BossEntity.SpawnBuilder builder) {
         spawnLocation.getWorld().spawnParticle(Particle.CLOUD, spawnLocation, 50);
     }
 
-    @Override
-    public void onSpawn() {
-        getMob().getEntity().addPotionEffect(
+    public void onSpawn(BossEntity boss) {
+        boss.getMob().getEntity().addPotionEffect(
                 new PotionEffect(PotionEffectType.FIRE_RESISTANCE, PotionEffect.INFINITE_DURATION,
                         1, false, false)
         );
     }
 
-    @Override
     public void onKill(@NotNull Location location, @Nullable LivingEntity killer) {
         ItemUtils.giveOrDrop(killer, location, TROPHY);
     }
