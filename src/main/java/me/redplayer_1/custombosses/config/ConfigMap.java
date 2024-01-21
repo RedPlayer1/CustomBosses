@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 public class ConfigMap<K, V> {
@@ -33,6 +34,10 @@ public class ConfigMap<K, V> {
 
     public @Nullable V get(K key) {
         return map.get(key);
+    }
+
+    public HashMap<K, V> getMap() {
+        return map;
     }
 
     /**

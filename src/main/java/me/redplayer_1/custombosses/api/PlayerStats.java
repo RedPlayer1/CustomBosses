@@ -97,6 +97,9 @@ public class PlayerStats {
      * @param remove whether this instance should be removed from the registry (only use on player logouts)
      */
     public void save(boolean remove) {
+        // if everything is 0, don't save
+        if (bossSpawns.getMap().values().isEmpty() && bossKills.getMap().values().isEmpty()) return;
+
         bossSpawns.saveTo(data, "Spawns");
         bossKills.saveTo(data, "Kills");
         data.save();
