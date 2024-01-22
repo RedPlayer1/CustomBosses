@@ -6,13 +6,14 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class Trophy extends ItemStack {
     private static final NamespacedKey KEY = new NamespacedKey(CustomBosses.getInstance(), "trophy");
 
-    public Trophy(Material material, String name, List<String> lore) {
+    public Trophy(Material material, @Nullable String name, @Nullable List<String> lore) {
         super(material);
         ItemStack item = ItemUtils.createItem(material, name, lore, true);
         setItemMeta(item.getItemMeta());

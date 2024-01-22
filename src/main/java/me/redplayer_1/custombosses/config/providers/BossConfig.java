@@ -3,8 +3,11 @@ package me.redplayer_1.custombosses.config.providers;
 import me.redplayer_1.custombosses.abilities.Abilities;
 import me.redplayer_1.custombosses.api.Boss;
 import me.redplayer_1.custombosses.boss.BossEntity;
+import me.redplayer_1.custombosses.boss.Trophy;
 import me.redplayer_1.custombosses.config.Config;
+import me.redplayer_1.custombosses.util.CommandSequence;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.Nullable;
@@ -26,6 +29,10 @@ public final class BossConfig {
     private double health;
     private double damageScalar;
     private double attackRange;
+    private @Nullable CommandSequence preSpawnSequence;
+    private @Nullable CommandSequence spawnSequence;
+    private @Nullable CommandSequence killSequence;
+    private @Nullable Trophy trophy;
     private @Nullable Boss boss;
     private List<Abilities> abilities = new ArrayList<>();
 
@@ -112,6 +119,48 @@ public final class BossConfig {
             // optional values
             getValue("damage_scalar", key -> section.getDouble(key, 1), scalar -> bossConfig.damageScalar = scalar);
 
+            // get trophy
+            try {
+                getValue("trophy", section::getConfigurationSection, tSection ->
+                        getValue("material", str -> Material.valueOf(tSection.getString(str)), material ->
+                                getValue("name", tSection::getString, tName ->
+                                        getValue("lore", tSection::getStringList, lore ->
+                                                        bossConfig.trophy = new Trophy(material, tName, lore), () ->
+                                                bossConfig.trophy = new Trophy(material, tName, null)))));
+            } catch (ConfigValueNotFoundException e) {
+                e.logError(bossConfig.bossType + "/trophy");
+            }
+
+            // get event commands (see wiki for event-specific placeholders)
+            getValue("events", section::getConfigurationSection, eSection -> {
+                // TODO: add placeholders
+                getValue("pre_spawn", eSection::getStringList, preSpawn -> {
+                    CommandSequence cmdSequence = new CommandSequence();
+                    for (String cmd : preSpawn) {
+                        if (cmd.startsWith("delay")) {
+                            try {
+                                cmdSequence.addDelay(Integer.parseUnsignedInt(cmd.split(":")[1]));
+                            } catch (NumberFormatException e) {
+                                Bukkit.getLogger().warning("Invalid integer @" + bossConfig.bossType + "/events/pre_spawn (" + cmd + ")");
+                            }
+                        } else {
+                            cmdSequence.addCommand(cmd);
+                        }
+                    }
+                    bossConfig.preSpawnSequence = cmdSequence;
+                }, () -> {});
+
+                getValue("spawn", eSection::getStringList,
+                        spawn -> bossConfig.spawnSequence = new CommandSequence(spawn),
+                        () -> {}
+                );
+
+                getValue("kill", eSection::getStringList,
+                        kill -> bossConfig.killSequence = new CommandSequence(kill),
+                        () -> {}
+                );
+            });
+
             TYPES.put(bossConfig.bossType, bossConfig);
         }
     }
@@ -123,12 +172,31 @@ public final class BossConfig {
      * @param setter the setter function for using the key's value
      * @param <T> type of the key's value
      */
-    private static <T> void getValue(String key, Function<String, T> getter, Consumer<T> setter) throws ConfigValueNotFoundException{
-        T val = getter.apply(key);
+    private static <T> void getValue(String key, Function<String, T> getter, Consumer<T> setter) throws ConfigValueNotFoundException {
+        T val = null;
+        try {
+            val = getter.apply(key);
+        } catch (Exception ignored) {}
+
         if (val != null) {
             setter.accept(val);
         } else {
             throw new ConfigValueNotFoundException(key);
+        }
+    }
+
+    /**
+     * Get the value and execute different tasks if it is null or not
+     * @param key key to get
+     * @param getter the getter function for the key
+     * @param setter the setter function using the key's value
+     * @param ifNull run if the key is null or an error occurred
+     */
+    private static <T> void getValue(String key, Function<String, T> getter, Consumer<T> setter, Runnable ifNull) {
+        try {
+            getValue(key, getter, setter);
+        } catch (ConfigValueNotFoundException e) {
+            ifNull.run();
         }
     }
 
@@ -214,10 +282,6 @@ public final class BossConfig {
         plainName = displayName.replaceAll("[&§].", "");
         // remove whitespace
         bossType = plainName.replaceAll("\\s+", "_").toUpperCase();
-    }
-
-    public BossConfig copy() {
-        return new BossConfig(entityType, bossType, displayName, plainName, health, damageScalar, attackRange, boss, abilities);
     }
 
     private static class ConfigValueNotFoundException extends RuntimeException {
