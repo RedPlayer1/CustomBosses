@@ -24,7 +24,7 @@ import java.util.*;
 public class BossEntity {
     private static final Random random = new Random();
     private static final HashMap<UUID, BossEntity> registry = new HashMap<>();
-    private final SyntaxParser msgParser = new SyntaxParser(new String[]{"{player}", "{boss}"});
+    private final SyntaxParser msgParser = new SyntaxParser("{player}", "{boss}");
     private Mob entity;
     private final List<BossAbility> abilities = new ArrayList<>();
     private final BossConfig config;

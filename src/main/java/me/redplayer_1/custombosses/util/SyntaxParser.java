@@ -19,7 +19,7 @@ public class SyntaxParser {
         }
     }
 
-    public SyntaxParser(String[] placeholders) {
+    public SyntaxParser(String... placeholders) {
         for (String str : placeholders) {
             vars.put(str, null);
         }
