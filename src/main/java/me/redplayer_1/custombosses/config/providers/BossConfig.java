@@ -6,6 +6,7 @@ import me.redplayer_1.custombosses.boss.BossEntity;
 import me.redplayer_1.custombosses.boss.Trophy;
 import me.redplayer_1.custombosses.config.Config;
 import me.redplayer_1.custombosses.util.CommandSequence;
+import me.redplayer_1.custombosses.util.SyntaxParser;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -133,7 +134,6 @@ public final class BossConfig {
 
             // get event commands (see wiki for event-specific placeholders)
             getValue("events", section::getConfigurationSection, eSection -> {
-                // TODO: add placeholders
                 getValue("pre_spawn", eSection::getStringList, preSpawn -> {
                     CommandSequence cmdSequence = new CommandSequence();
                     for (String cmd : preSpawn) {

@@ -28,11 +28,9 @@ public class BossEntity {
     private Mob entity;
     private final List<BossAbility> abilities = new ArrayList<>();
     private final BossConfig config;
-    private final int level;
 
-    public BossEntity(BossConfig config, int level) {
+    public BossEntity(BossConfig config) {
         this.config = config;
-        this.level = level;
         config.getAbilities().forEach(ability -> this.abilities.add(ability.create()));
     }
 
