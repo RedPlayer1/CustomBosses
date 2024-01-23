@@ -6,7 +6,6 @@ import me.redplayer_1.custombosses.boss.BossEntity;
 import me.redplayer_1.custombosses.boss.Trophy;
 import me.redplayer_1.custombosses.config.Config;
 import me.redplayer_1.custombosses.util.CommandSequence;
-import me.redplayer_1.custombosses.util.SyntaxParser;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -106,12 +105,11 @@ public final class BossConfig {
                 getValue("attack_range", section::getString, range -> bossConfig.attackRange = Double.parseDouble(range));
                 getValue("abilities", section::getConfigurationSection, aSection -> {
                     for (String abilityName : aSection.getKeys(false)) {
-                        if (abilityName.equalsIgnoreCase("none")) break;
                         Abilities ability = Abilities.valueOf(abilityName.toUpperCase());
                         ability.setChance(aSection.getDouble(abilityName));
                         bossConfig.abilities.add(ability);
                     }
-                });
+                }, () -> {});
 
             } catch (ConfigValueNotFoundException e) {
                 e.logError(bossConfig.bossType);

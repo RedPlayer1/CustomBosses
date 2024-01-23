@@ -38,7 +38,7 @@ public class BossCommand extends Command {
             // spawn a new boss of that type
             BossConfig config = BossConfig.getType(args[0]);
             if (config == null) return false; // type wasn't registered
-            BossEntity bossEntity = new BossEntity(config, 1);
+            BossEntity bossEntity = new BossEntity(config);
             player.sendMessage(MessageUtils.mmsgToComponent("<gray>Spawning a <red><i>" + bossEntity.getConfig().getDisplayName() + "."));
             bossEntity.spawn(player.getLocation(), player);
         } else if (args[1].equalsIgnoreCase("spawn")){
@@ -51,7 +51,7 @@ public class BossCommand extends Command {
                         Integer.parseInt(args[3]),
                         Integer.parseInt(args[4])
                 };
-                new BossEntity(Objects.requireNonNull(BossConfig.getType(args[0])), 1).spawn(
+                new BossEntity(Objects.requireNonNull(BossConfig.getType(args[0]))).spawn(
                         new Location(Bukkit.getWorld(args[5]), coords[0], coords[1], coords[2]),
                         null
                 );
