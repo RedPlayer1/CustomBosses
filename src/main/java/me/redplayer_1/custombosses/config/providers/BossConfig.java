@@ -125,7 +125,8 @@ public final class BossConfig {
                                 getValue("name", tSection::getString, tName ->
                                         getValue("lore", tSection::getStringList, lore ->
                                                         bossConfig.trophy = new Trophy(material, tName, lore), () ->
-                                                bossConfig.trophy = new Trophy(material, tName, null)))));
+                                                bossConfig.trophy = new Trophy(material, tName, null)))),
+                        () -> {});
             } catch (ConfigValueNotFoundException e) {
                 e.logError(bossConfig.bossType + "/trophy");
             }
@@ -157,7 +158,7 @@ public final class BossConfig {
                         kill -> bossConfig.killSequence = new CommandSequence(kill),
                         () -> {}
                 );
-            });
+            }, () -> {});
 
             TYPES.put(bossConfig.bossType, bossConfig);
         }
