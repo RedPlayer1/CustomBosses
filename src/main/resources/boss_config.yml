@@ -8,17 +8,31 @@ Basic Zombie:
     REGEN: .2
     THUNDERSTORM: .8
     INVINCIBILITY: .9
+  trophy:
+    material: ZOMBIE_HEAD
+    name: "<gradient:dark_green:#4dff00>Basic Zombie Trophy</gradient>"
+    lore:
+      - "<gray>Obtained from killing a <dark_green>Basic Zombie</dark_green>"
 
 Basic Husk:
   classpath: "me.redplayer_1.custombosses.boss.impl.BasicHusk"
   entity_type: "HUSK"
   health: 100
   attack_range: 20
+  damage_scalar: .6
   abilities:
     FIRE_RING: .4
     STRENGTH: .9
     THUNDERSTORM: .7
     REGEN: .85
+  trophy:
+    material: DEAD_BUSH
+    name: "<gradient:#ff5c26:yellow>Basic Husk Trophy</gradient>"
+    lore:
+      - "<gray>Obtained from killing a <color:#ff5c26>Basic Husk</color>"
+  events:
+    pre_spawn:
+      - "delay: 25"
 
 Miner Zombie:
   classpath: "me.redplayer_1.custombosses.boss.impl.MinerZombie"
@@ -30,6 +44,11 @@ Miner Zombie:
     STASIS: .9
     MINION: .89
     INVINCIBILITY: .7
+  trophy:
+    material: SEA_LANTERN
+    name: "<dark_green>Miner Zombie Trophy</dark_green>"
+    lore:
+      - "<gray>Obtained from killing a <dark_green><i>Miner Zombie</i></dark_green>"
 
 Bob:
   classpath: "me.redplayer_1.custombosses.boss.impl.Bob"

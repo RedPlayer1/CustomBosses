@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class Bob implements Boss {
-    public void onPreSpawn(Location spawnLocation, BossEntity.SpawnBuilder builder) {}
+    public void onPreSpawn(Location spawnLocation, BossEntity.SpawnBuilder builder) { }
 
     public void onSpawn(BossEntity boss) {
         ItemUtils.applyEquipment(
@@ -26,5 +26,5 @@ public class Bob implements Boss {
                 null);
     }
 
-    public void onKill(@NotNull Location location, @Nullable LivingEntity killer) {}
+    public void onKill(@NotNull Location location, @Nullable LivingEntity killer) { }
 }

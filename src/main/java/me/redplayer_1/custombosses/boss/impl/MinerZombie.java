@@ -2,8 +2,6 @@ package me.redplayer_1.custombosses.boss.impl;
 
 import me.redplayer_1.custombosses.api.Boss;
 import me.redplayer_1.custombosses.boss.BossEntity;
-import me.redplayer_1.custombosses.boss.Trophy;
-import me.redplayer_1.custombosses.util.ItemUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -12,18 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public class MinerZombie implements Boss {
-    private static final ItemStack TROPHY = new Trophy(
-            Material.SEA_LANTERN,
-            "<dark_green>Miner Zombie Trophy</dark_green>",
-            List.of("<gray>Obtained from killing a <dark_green><i>Miner Zombie</i></dark_green>")
-    );
-
-    public void onPreSpawn(Location spawnLocation, BossEntity.SpawnBuilder builder) {
-
-    }
+    public void onPreSpawn(Location spawnLocation, BossEntity.SpawnBuilder builder) { }
 
     public void onSpawn(BossEntity boss) {
         EntityEquipment equipment = boss.getMob().getEntity().getEquipment();
@@ -42,7 +30,5 @@ public class MinerZombie implements Boss {
         equipment.setItemInMainHandDropChance(0);
     }
 
-    public void onKill(@NotNull Location location, @Nullable LivingEntity killer) {
-        ItemUtils.giveOrDrop(killer, location, TROPHY);
-    }
+    public void onKill(@NotNull Location location, @Nullable LivingEntity killer) { }
 }
