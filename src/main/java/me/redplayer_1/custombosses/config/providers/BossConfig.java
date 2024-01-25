@@ -225,7 +225,7 @@ public final class BossConfig {
     }
 
     /**
-     * Runs the action if there is a Boss for this config
+     * Runs the action if there is a Boss class for this config
      * @param action the action to perform
      */
     public void doIfBoss(Consumer<Boss> action) {
@@ -273,6 +273,28 @@ public final class BossConfig {
 
     public List<Abilities> getAbilities() {
         return abilities;
+    }
+
+    public @Nullable Trophy getTrophy() {
+        return trophy;
+    }
+
+    public void runPreSpawnSequence() {
+        if (preSpawnSequence != null) {
+            preSpawnSequence.run();
+        }
+    }
+
+    public void runSpawnSequence() {
+        if (spawnSequence != null) {
+            spawnSequence.run();
+        }
+    }
+
+    public void runKillSequence() {
+        if (killSequence != null) {
+            killSequence.run();
+        }
     }
 
     public void setDisplayName(String displayName) {

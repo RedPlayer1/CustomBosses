@@ -6,6 +6,7 @@ import me.redplayer_1.custombosses.abilities.CooldownBossAbility;
 import me.redplayer_1.custombosses.api.PlayerStats;
 import me.redplayer_1.custombosses.config.providers.BossConfig;
 import me.redplayer_1.custombosses.entity.Mob;
+import me.redplayer_1.custombosses.util.ItemUtils;
 import me.redplayer_1.custombosses.util.LocationUtils;
 import me.redplayer_1.custombosses.util.MessageUtils;
 import me.redplayer_1.custombosses.util.SyntaxParser;
@@ -43,6 +44,8 @@ public class BossEntity {
     public final void spawn(Location loc, @Nullable Entity spawner) {
         SpawnBuilder builder = new SpawnBuilder();
         config.doIfBoss(boss -> boss.onPreSpawn(loc, builder));
+        config.runPreSpawnSequence();
+
         Bukkit.getScheduler().runTaskLater(CustomBosses.getInstance(), mainTask -> {
             entity = new Mob(config.getDisplayName(), config.getEntityType(), loc, config.getHealth(), true, config.getAttackRange(), true);
             entity.setDamageScalar(config.getDamageScalar());
@@ -55,9 +58,10 @@ public class BossEntity {
                     stats.incrementSpawn(config.getBossType());
                 }
             }
-            config.doIfBoss(boss -> boss.onSpawn(this));
             // make it harder for players to constantly knock Boss back & avoid damage
             entity.getEntity().getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.6);
+            config.doIfBoss(boss -> boss.onSpawn(this));
+            config.runSpawnSequence();
 
             // ability task
             Bukkit.getScheduler().runTaskTimer(CustomBosses.getInstance(), task -> {
@@ -125,7 +129,12 @@ public class BossEntity {
                 stats.incrementKill(config.getBossType());
             }
         }
+        // builtin death event takes priority over config sequence
         config.doIfBoss(boss -> boss.onKill(entity.getLocation(), killer));
+        config.runKillSequence();
+        if (config.getTrophy() != null) {
+            ItemUtils.giveOrDrop(killer, entity.getLocation(), config.getTrophy());
+        }
         despawn();
     }
 

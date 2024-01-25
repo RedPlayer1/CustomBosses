@@ -36,6 +36,7 @@ public class StasisAbility extends CooldownBossAbility {
         @EventHandler
         public void onPlayerMove(PlayerMoveEvent event) {
             event.setCancelled(event.getTo().getY() > event.getFrom().getY() && cache.contains(event.getPlayer()));
+        //    event.getPlayer().setVelocity(new Vector(0, -1, 0)); TODO: test
         }
 
         @EventHandler
