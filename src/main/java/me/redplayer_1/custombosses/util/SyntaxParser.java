@@ -1,13 +1,13 @@
 package me.redplayer_1.custombosses.util;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * A utility class for replacing string representations of variable names with their appropriate values
  */
 public class SyntaxParser {
-    private final HashMap<String, String> vars = new HashMap<>();
+    private final LinkedHashMap<String, String> vars = new LinkedHashMap<>();
 
     public SyntaxParser(String[] placeholders, String[] values) {
         for (int i = 0; i < placeholders.length; i++) {
@@ -23,6 +23,20 @@ public class SyntaxParser {
         for (String str : placeholders) {
             vars.put(str, null);
         }
+    }
+
+    /**
+     * Sequentially assignes the values to the existing placeholders.
+     * @param values the values to assign (in String form)
+     */
+    public SyntaxParser setValues(Object... values) {
+        int i = 0;
+        for (String placecholder : vars.keySet()) {
+            if (i > values.length) return this;
+            vars.put(placecholder, values[i].toString());
+            i++;
+        }
+        return this;
     }
 
     public void setVar(String key, String value) {

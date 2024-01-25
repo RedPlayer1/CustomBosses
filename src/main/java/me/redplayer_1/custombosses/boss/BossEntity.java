@@ -24,6 +24,7 @@ import java.util.*;
 
 public class BossEntity {
     private static final Random random = new Random();
+    private static final String COORD_FORMAT = "%.2f";
     private static final HashMap<UUID, BossEntity> registry = new HashMap<>();
     private final SyntaxParser msgParser = new SyntaxParser("{player}", "{boss}");
     private Mob entity;
@@ -44,8 +45,14 @@ public class BossEntity {
     public final void spawn(Location loc, @Nullable Entity spawner) {
         SpawnBuilder builder = new SpawnBuilder();
         config.doIfBoss(boss -> boss.onPreSpawn(loc, builder));
-        config.runPreSpawnSequence();
+        SyntaxParser sequenceParser = new SyntaxParser("{player}", "{x}", "{y}", "{z}").setValues(
+                spawner != null? spawner.getName() : "",
+                String.format(COORD_FORMAT, loc.x()),
+                String.format(COORD_FORMAT, loc.y()),
+                String.format(COORD_FORMAT, loc.z())
+        );
 
+        // spawn the entity
         Bukkit.getScheduler().runTaskLater(CustomBosses.getInstance(), mainTask -> {
             entity = new Mob(config.getDisplayName(), config.getEntityType(), loc, config.getHealth(), true, config.getAttackRange(), true);
             entity.setDamageScalar(config.getDamageScalar());
@@ -61,7 +68,13 @@ public class BossEntity {
             // make it harder for players to constantly knock Boss back & avoid damage
             entity.getEntity().getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE).setBaseValue(0.6);
             config.doIfBoss(boss -> boss.onSpawn(this));
-            config.runSpawnSequence();
+            Location newLoc = entity.getLocation(); // builtin event might have changed the entity's location
+            config.runSpawnSequence(sequenceParser.setValues(
+                    spawner != null? spawner.getName() : "",
+                    String.format(COORD_FORMAT, newLoc.x()),
+                    String.format(COORD_FORMAT, newLoc.y()),
+                    String.format(COORD_FORMAT, newLoc.z())
+            ));
 
             // ability task
             Bukkit.getScheduler().runTaskTimer(CustomBosses.getInstance(), task -> {
@@ -83,7 +96,7 @@ public class BossEntity {
                 }
                 Bukkit.broadcast(MessageUtils.mmsgToComponent(broadcastMsg));
             }
-        }, builder.delay);
+        }, config.runPreSpawnSequence(sequenceParser) + builder.delay);
 
     }
 
@@ -129,11 +142,19 @@ public class BossEntity {
                 stats.incrementKill(config.getBossType());
             }
         }
+        Location deathLoc = entity.getLocation();
         // builtin death event takes priority over config sequence
-        config.doIfBoss(boss -> boss.onKill(entity.getLocation(), killer));
-        config.runKillSequence();
+        config.doIfBoss(boss -> boss.onKill(deathLoc, killer));
+        config.runKillSequence(
+                new SyntaxParser("{player}", "{x}", "{y}", "{z}").setValues(
+                        killer != null? killer.getName() : "",
+                        String.format(COORD_FORMAT, deathLoc.x()),
+                        String.format(COORD_FORMAT, deathLoc.y()),
+                        String.format(COORD_FORMAT, deathLoc.z())
+                )
+        );
         if (config.getTrophy() != null) {
-            ItemUtils.giveOrDrop(killer, entity.getLocation(), config.getTrophy());
+            ItemUtils.giveOrDrop(killer, deathLoc, config.getTrophy());
         }
         despawn();
     }

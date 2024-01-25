@@ -6,6 +6,7 @@ import me.redplayer_1.custombosses.boss.BossEntity;
 import me.redplayer_1.custombosses.boss.Trophy;
 import me.redplayer_1.custombosses.config.Config;
 import me.redplayer_1.custombosses.util.CommandSequence;
+import me.redplayer_1.custombosses.util.SyntaxParser;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -138,7 +139,7 @@ public final class BossConfig {
                     for (String cmd : preSpawn) {
                         if (cmd.startsWith("delay")) {
                             try {
-                                cmdSequence.addDelay(Integer.parseUnsignedInt(cmd.split(":")[1]));
+                                cmdSequence.addDelay(Integer.parseUnsignedInt(cmd.replaceAll("\\s+", "").split(":")[1]));
                             } catch (NumberFormatException e) {
                                 Bukkit.getLogger().warning("Invalid integer @" + bossConfig.bossType + "/events/pre_spawn (" + cmd + ")");
                             }
@@ -279,22 +280,40 @@ public final class BossConfig {
         return trophy;
     }
 
-    public void runPreSpawnSequence() {
+    /**
+     * Runs the pre_spawn command sequence
+     * @param parser optional parser for the CommandSequence
+     * @return the number of ticks the sequence will take to complete
+     */
+    public Integer runPreSpawnSequence(@Nullable SyntaxParser parser) {
         if (preSpawnSequence != null) {
-            preSpawnSequence.run();
+            return preSpawnSequence.run(parser);
         }
+        return 0;
     }
 
-    public void runSpawnSequence() {
+    /**
+     * Runs the spawn command sequence
+     * @param parser optional parser for the CommandSequence
+     * @return the number of ticks the sequence will take to complete
+     */
+    public Integer runSpawnSequence(@Nullable SyntaxParser parser) {
         if (spawnSequence != null) {
-            spawnSequence.run();
+            return spawnSequence.run(parser);
         }
+        return 0;
     }
 
-    public void runKillSequence() {
+    /**
+     * Runs the kill command sequence
+     * @param parser optional parser for the CommandSequence
+     * @return the number of ticks the sequence will take to complete
+     */
+    public Integer runKillSequence(@Nullable SyntaxParser parser) {
         if (killSequence != null) {
-            killSequence.run();
+            return killSequence.run(parser);
         }
+        return 0;
     }
 
     public void setDisplayName(String displayName) {
