@@ -52,7 +52,9 @@ public final class BossConfig {
         setDisplayName(displayName);
     }
 
-    /** Copy constructor */
+    /**
+     * Copy constructor
+     */
     private BossConfig(EntityType entityType, String bossType, String displayName, String plainName, double health, double damageScalar, double attackRange, @Nullable Boss boss, List<Abilities> abilities) {
         this.entityType = entityType;
         this.bossType = bossType;
@@ -90,18 +92,18 @@ public final class BossConfig {
             try {
                 // required values
                 getValue("entity_type", section::getString, type -> {
-                        try {
-                            bossConfig.entityType = EntityType.valueOf(type);
-                        } catch (IllegalArgumentException e) {
-                            Bukkit.getLogger().warning("Invalid entity_type for Boss \"" + bossConfig.bossType + "\"");
-                        }
+                    try {
+                        bossConfig.entityType = EntityType.valueOf(type);
+                    } catch (IllegalArgumentException e) {
+                        Bukkit.getLogger().warning("Invalid entity_type for Boss \"" + bossConfig.bossType + "\"");
+                    }
                 });
                 getValue("health", section::getDouble, health -> {
-                        if (health > 0)
-                            bossConfig.health = health;
-                        else {
-                            Bukkit.getLogger().warning("Health must be > 0 (in " + bossConfig.bossType + " config)");
-                        }
+                    if (health > 0)
+                        bossConfig.health = health;
+                    else {
+                        Bukkit.getLogger().warning("Health must be > 0 (in " + bossConfig.bossType + " config)");
+                    }
                 });
                 getValue("attack_range", section::getString, range -> bossConfig.attackRange = Double.parseDouble(range));
                 getValue("abilities", section::getConfigurationSection, aSection -> {
@@ -110,7 +112,8 @@ public final class BossConfig {
                         ability.setChance(aSection.getDouble(abilityName));
                         bossConfig.abilities.add(ability);
                     }
-                }, () -> {});
+                }, () -> {
+                });
 
             } catch (ConfigValueNotFoundException e) {
                 e.logError(bossConfig.bossType);
@@ -122,12 +125,13 @@ public final class BossConfig {
             // get trophy
             try {
                 getValue("trophy", section::getConfigurationSection, tSection ->
-                        getValue("material", str -> Material.valueOf(tSection.getString(str)), material ->
-                                getValue("name", tSection::getString, tName ->
-                                        getValue("lore", tSection::getStringList, lore ->
+                                getValue("material", str -> Material.valueOf(tSection.getString(str)), material ->
+                                        getValue("name", tSection::getString, tName ->
+                                                getValue("lore", tSection::getStringList, lore ->
                                                         bossConfig.trophy = new Trophy(material, tName, lore), () ->
-                                                bossConfig.trophy = new Trophy(material, tName, null)))),
-                        () -> {});
+                                                        bossConfig.trophy = new Trophy(material, tName, null)))),
+                        () -> {
+                        });
             } catch (ConfigValueNotFoundException e) {
                 e.logError(bossConfig.bossType + "/trophy");
             }
@@ -148,18 +152,22 @@ public final class BossConfig {
                         }
                     }
                     bossConfig.preSpawnSequence = cmdSequence;
-                }, () -> {});
+                }, () -> {
+                });
 
                 getValue("spawn", eSection::getStringList,
                         spawn -> bossConfig.spawnSequence = new CommandSequence(spawn),
-                        () -> {}
+                        () -> {
+                        }
                 );
 
                 getValue("kill", eSection::getStringList,
                         kill -> bossConfig.killSequence = new CommandSequence(kill),
-                        () -> {}
+                        () -> {
+                        }
                 );
-            }, () -> {});
+            }, () -> {
+            });
 
             TYPES.put(bossConfig.bossType, bossConfig);
         }
@@ -167,16 +175,18 @@ public final class BossConfig {
 
     /**
      * Attempt to get & apply values or throw error if null
-     * @param key the yaml key for the value to get
+     *
+     * @param key    the yaml key for the value to get
      * @param getter the getter function for the key
      * @param setter the setter function for using the key's value
-     * @param <T> type of the key's value
+     * @param <T>    type of the key's value
      */
     private static <T> void getValue(String key, Function<String, T> getter, Consumer<T> setter) throws ConfigValueNotFoundException {
         T val = null;
         try {
             val = getter.apply(key);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         if (val != null) {
             setter.accept(val);
@@ -187,7 +197,8 @@ public final class BossConfig {
 
     /**
      * Get the value and execute different tasks if it is null or not
-     * @param key key to get
+     *
+     * @param key    key to get
      * @param getter the getter function for the key
      * @param setter the setter function using the key's value
      * @param ifNull run if the key is null or an error occurred
@@ -210,6 +221,7 @@ public final class BossConfig {
 
     /**
      * Returns the defined configuration for the boss type
+     *
      * @param bossType type of boss
      * @return the BossConfig for the boss, or null if it hasn't been registered
      * @see BossConfig#getBossType()
@@ -227,6 +239,7 @@ public final class BossConfig {
 
     /**
      * Runs the action if there is a Boss class for this config
+     *
      * @param action the action to perform
      */
     public void doIfBoss(Consumer<Boss> action) {
@@ -253,16 +266,16 @@ public final class BossConfig {
     }
 
     /**
-     * @see BossConfig#getPlainName()
      * @return the boss type (Boss's name if it were an enum)
+     * @see BossConfig#getPlainName()
      */
     public String getBossType() {
         return bossType;
     }
 
     /**
-     * @see BossConfig#getDisplayName()
      * @return the display name without any color codes
+     * @see BossConfig#getDisplayName()
      */
     public String getPlainName() {
         return plainName;
@@ -282,6 +295,7 @@ public final class BossConfig {
 
     /**
      * Runs the pre_spawn command sequence
+     *
      * @param parser optional parser for the CommandSequence
      * @return the number of ticks the sequence will take to complete
      */
@@ -294,6 +308,7 @@ public final class BossConfig {
 
     /**
      * Runs the spawn command sequence
+     *
      * @param parser optional parser for the CommandSequence
      * @return the number of ticks the sequence will take to complete
      */
@@ -306,6 +321,7 @@ public final class BossConfig {
 
     /**
      * Runs the kill command sequence
+     *
      * @param parser optional parser for the CommandSequence
      * @return the number of ticks the sequence will take to complete
      */

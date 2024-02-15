@@ -30,7 +30,6 @@ public final class CustomBosses extends JavaPlugin {
     - Boss Armor & Weapons
     - Boss Difficulty (increases chance of re-roll if no ability selected, more damage, more HP)
     - Boss damage affected by abilities
-    - FINISH saving stats to file (see PlayerStats.save())
      */
     private static CustomBosses instance;
     private Config settings;

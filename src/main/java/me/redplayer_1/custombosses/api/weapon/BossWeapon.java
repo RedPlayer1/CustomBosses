@@ -12,8 +12,8 @@ public interface BossWeapon {
     /**
      * Fired when the player wielding the weapon left clicks with it
      *
-     * @param event the triggered event
-     * @param bossEntity  the boss that was clicked on (nullable)
+     * @param event      the triggered event
+     * @param bossEntity the boss that was clicked on (nullable)
      */
     void onLeftClick(PlayerInteractEvent event, @Nullable BossEntity bossEntity/* the event (from listener) */);
 

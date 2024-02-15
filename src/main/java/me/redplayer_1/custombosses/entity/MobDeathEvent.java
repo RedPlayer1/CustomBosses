@@ -24,6 +24,7 @@ public class MobDeathEvent extends Event implements Cancellable {
         this.killed = killed;
         this.killer = killer;
     }
+
     public static @NotNull HandlerList getHandlerList() {
         return HANDLER_LIST;
     }

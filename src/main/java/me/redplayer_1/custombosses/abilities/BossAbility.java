@@ -27,8 +27,8 @@ public abstract class BossAbility {
     /**
      * Fired when an entity attacks and this ability was chosen
      *
-     * @param bossEntity   the boss using the ability
-     * @param target the player the ability is being used on
+     * @param bossEntity the boss using the ability
+     * @param target     the player the ability is being used on
      * @return whether the ability was activated successfully (if not, a new one is chosen)
      */
     public abstract boolean use(BossEntity bossEntity, Player target);

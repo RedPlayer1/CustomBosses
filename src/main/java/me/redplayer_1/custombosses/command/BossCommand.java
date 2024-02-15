@@ -20,8 +20,17 @@ public class BossCommand extends Command {
 
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
+        final String noPermMsg = "<red>No Permission!</red>";
+        if (!sender.hasPermission(Permission.COMMAND_BOSS)) {
+            sender.sendRichMessage(noPermMsg);
+            return true;
+        }
         if (args.length < 2) return false;
         if (args[1].equalsIgnoreCase("despawn")) {
+            if (!sender.hasPermission(Permission.COMMAND_BOSS_KILL)) {
+                sender.sendRichMessage(noPermMsg);
+                return true;
+            }
             // despawn all bosses of that type
             List<UUID> despawnQueue = new LinkedList<>();
 
@@ -35,13 +44,17 @@ public class BossCommand extends Command {
             }
         }
         if (sender instanceof Player player && args[1].equalsIgnoreCase("spawn")) {
+            if (!sender.hasPermission(Permission.COMMAND_BOSS_SPAWN)) {
+                sender.sendRichMessage(noPermMsg);
+                return true;
+            }
             // spawn a new boss of that type
             BossConfig config = BossConfig.getType(args[0]);
             if (config == null) return false; // type wasn't registered
             BossEntity bossEntity = new BossEntity(config);
             player.sendMessage(MessageUtils.mmsgToComponent("<gray>Spawning a <red><i>" + bossEntity.getConfig().getDisplayName() + "."));
             bossEntity.spawn(player.getLocation(), player);
-        } else if (args[1].equalsIgnoreCase("spawn")){
+        } else if (args[1].equalsIgnoreCase("spawn")) {
             // coords must be specified if used from console (arg 2-5)
             // x, y, z, world
             if (args.length < 6) return false;

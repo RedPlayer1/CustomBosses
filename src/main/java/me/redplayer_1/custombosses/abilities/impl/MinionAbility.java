@@ -23,7 +23,7 @@ import java.util.UUID;
 public class MinionAbility extends CooldownBossAbility {
     private static final int AMOUNT = 5;
     private static final NamespacedKey KEY = new NamespacedKey(CustomBosses.getInstance(), "minion_owner_id");
-    private static HashMap<UUID, HashMap<Integer, LivingEntity>> minions = new HashMap<>();
+    private static final HashMap<UUID, HashMap<Integer, LivingEntity>> minions = new HashMap<>();
 
     public MinionAbility() {
         this(0.4);

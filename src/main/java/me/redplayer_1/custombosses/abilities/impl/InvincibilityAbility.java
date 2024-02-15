@@ -27,7 +27,6 @@ public class InvincibilityAbility extends CooldownBossAbility {
     }
 
 
-
     @Override
     public boolean use(BossEntity bossEntity, Player target) {
         AtomicInteger tickCount = new AtomicInteger();

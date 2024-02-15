@@ -13,19 +13,21 @@ import java.util.function.Consumer;
 /**
  * Creates a list that removes elements after a delay. Each element has its own {@link org.bukkit.scheduler.BukkitRunnable},
  * potentially causing server lag with larger lists.
+ *
  * @param <T>
  */
 public class CachedList<T> implements Iterable<T> {
-    private record CacheEntry<E>(E item, long insertTime) {}
+    private record CacheEntry<E>(E item, long insertTime) {
+    }
 
     private final LinkedList<CacheEntry<T>> list = new LinkedList<>();
     private Consumer<T> removeAction = null;
-    private int lifetime;
-    private TimeUnit unit;
+    private final int lifetime;
+    private final TimeUnit unit;
 
     /**
      * @param lifetime the lifetime of elements added to the list
-     * @param unit the unit of time the lifetime represents
+     * @param unit     the unit of time the lifetime represents
      */
     public CachedList(int lifetime, TimeUnit unit) {
         this.lifetime = lifetime;
@@ -34,7 +36,7 @@ public class CachedList<T> implements Iterable<T> {
 
     /**
      * @param lifetime the lifetime of elements added to the list
-     * @param unit the unit of time the lifetime represents
+     * @param unit     the unit of time the lifetime represents
      * @param contents initial contents to load into the list
      */
     @SafeVarargs
@@ -66,6 +68,7 @@ public class CachedList<T> implements Iterable<T> {
 
     /**
      * Removes the element at that index from the list
+     *
      * @return the element that was removed
      * @throws IndexOutOfBoundsException if the index was invalid
      */
@@ -75,9 +78,10 @@ public class CachedList<T> implements Iterable<T> {
 
     /**
      * Removes the element from the list
+     *
      * @return the element that was removed or null if it didn't exist
      */
-    public @Nullable T remove(T element){
+    public @Nullable T remove(T element) {
         try {
             return remove(indexOf(element));
         } catch (IndexOutOfBoundsException ignored) {
@@ -94,7 +98,6 @@ public class CachedList<T> implements Iterable<T> {
     }
 
     /**
-     *
      * @param element the element to search for
      * @return the index of the element in the list, or -1 if it isn't found
      */

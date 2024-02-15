@@ -16,14 +16,14 @@ import java.util.List;
 
 public class ItemUtils {
     /**
+     * @param material    item material
+     * @param name        the name of the item (supports MiniMessage)
+     * @param lore        the lore of the item (supports MiniMessage)
+     * @param unbreakable if the item shouldn't lose durability
+     * @return the created item
      * @see ItemStack#ItemStack(Material)  ItemStack
      * @see ItemMeta#displayName(Component)
      * @see ItemMeta#lore(List)
-     * @param material item material
-     * @param name the name of the item (supports MiniMessage)
-     * @param lore the lore of the item (supports MiniMessage)
-     * @param unbreakable if the item shouldn't lose durability
-     * @return the created item
      */
     public static ItemStack createItem(Material material, @Nullable String name, @Nullable List<String> lore, boolean unbreakable) {
         ItemStack item = new ItemStack(material);
@@ -31,7 +31,7 @@ public class ItemUtils {
         if (name != null) meta.displayName(MessageUtils.mmsgToComponent(name));
         if (lore != null) {
             List<Component> newLore = new LinkedList<>();
-            for (String str: lore) {
+            for (String str : lore) {
                 newLore.add(MessageUtils.mmsgToComponent(str));
             }
             meta.lore(newLore);
@@ -42,15 +42,17 @@ public class ItemUtils {
         return item;
     }
 
-    public record Enchant(Enchantment enchantment, int level) {}
+    public record Enchant(Enchantment enchantment, int level) {
+    }
 
     /**
      * Creates an item with enchantments
-     * @see ItemUtils#createItem(Material, String, List, boolean)
-     * @see ItemStack#addEnchantment(Enchantment, int)
-     * @param onlySafe only apply safe enchantments
+     *
+     * @param onlySafe     only apply safe enchantments
      * @param enchantments enchantments to apply
      * @return the new ItemStack
+     * @see ItemUtils#createItem(Material, String, List, boolean)
+     * @see ItemStack#addEnchantment(Enchantment, int)
      */
     public static ItemStack createItem(Material material, String name, List<String> lore, boolean unbreakable, boolean onlySafe, Enchant... enchantments) {
         ItemStack item = createItem(material, name, lore, unbreakable);
@@ -86,9 +88,10 @@ public class ItemUtils {
 
     /**
      * Add items to target's inventory (if it exists) and drop those that don't fit.
-     * @param target entity to give items to
+     *
+     * @param target   entity to give items to
      * @param location the location to drop the items (if any)
-     * @param items the items to give
+     * @param items    the items to give
      */
     public static void giveOrDrop(LivingEntity target, Location location, ItemStack... items) {
         if (target instanceof Player p) {

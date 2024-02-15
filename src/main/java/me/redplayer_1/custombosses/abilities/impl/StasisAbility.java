@@ -26,6 +26,7 @@ public class StasisAbility extends CooldownBossAbility {
     public StasisAbility() {
         this(0.8);
     }
+
     public StasisAbility(double chance) {
         super("<gradient:green:yellow>Stasis</gradient>", false, chance, DURATION * 20 * 2 /* this ability is very op */);
     }

@@ -8,7 +8,18 @@ api-version: '1.20'
 commands:
   boss:
     description: root command for all boss utilities
-    usage: /boss <args>
+    usage: /boss <spawn|kill> <type>
+permissions:
+  custombosses.command.boss:
+    description: Permission to use the base /boss command
+    default: op
+    children:
+      custombosses.command.boss.spawn:
+        description: Permission to spawn bosses (with /boss)
+        default: op
+      custombosses.command.boss.kill:
+        description: Permission to kill bosses (with /boss)
+        default: op
 dependencies:
   server:
     DecentHolograms:

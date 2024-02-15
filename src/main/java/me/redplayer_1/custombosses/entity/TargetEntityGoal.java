@@ -57,7 +57,7 @@ public class TargetEntityGoal implements Goal<Mob> {
         return shouldActivate();
     }
 
-     @Override
+    @Override
     public void tick() {
         if (!hostile) return;
         if (target == null || !isValidTarget(target)) {

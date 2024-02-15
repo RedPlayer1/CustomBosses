@@ -92,6 +92,42 @@ public class PlayerStats {
     }
 
     /**
+     * @param type the Boss type
+     * @return the number of spawns of that Boss or 0 if none exist
+     */
+    public int getSpawns(String type) {
+        Integer spawns = bossSpawns.get(type);
+        return spawns != null ? spawns : 0;
+    }
+
+    /**
+     * @param type the Boss type
+     * @return the number of kills of that Boss or 0 if none exist
+     */
+    public int getKills(String type) {
+        Integer kills = bossKills.get(type);
+        return kills != null ? kills : 0;
+    }
+
+    /**
+     * @param type the Boss type
+     * @return the number of spawns of that Boss or 0 if none exist
+     */
+    public static int getGlobalSpawns(String type) {
+        Integer spawns = globalSpawns.get(type);
+        return spawns != null ? spawns : 0;
+    }
+
+    /**
+     * @param type the Boss type
+     * @return the number of kills of that Boss or 0 if none exist
+     */
+    public static int getGlobalKills(String type) {
+        Integer kills = globalKills.get(type);
+        return kills != null ? kills : 0;
+    }
+
+    /**
      * Attempt to save stats to disk
      *
      * @param remove whether this instance should be removed from the registry (only use on player logouts)

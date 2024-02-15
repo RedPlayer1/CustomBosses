@@ -23,6 +23,7 @@ public class CommandSequence {
 
     /**
      * Creates a new sequence with the commands (does not support delays)
+     *
      * @param commands the commands
      */
     public CommandSequence(Collection<String> commands) {
@@ -39,6 +40,7 @@ public class CommandSequence {
 
     /**
      * Runs the sequence (as console)
+     *
      * @return the amount of ticks the sequence will take to complete
      */
     public int run() {
@@ -48,6 +50,7 @@ public class CommandSequence {
 
     /**
      * Runs the sequence (as console)
+     *
      * @param parser Parser to be run on every command. Must have args & values already set.
      * @return the amount of ticks the sequence will take to complete
      */

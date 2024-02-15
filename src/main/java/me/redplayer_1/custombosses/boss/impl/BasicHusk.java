@@ -31,5 +31,6 @@ public class BasicHusk implements Boss {
         equipment.setBootsDropChance(0);
     }
 
-    public void onKill(@NotNull Location location, @Nullable LivingEntity killer) { }
+    public void onKill(@NotNull Location location, @Nullable LivingEntity killer) {
+    }
 }

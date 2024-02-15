@@ -23,5 +23,6 @@ public class BasicZombie implements Boss {
     }
 
     @Override
-    public void onKill(@NotNull Location location, @Nullable LivingEntity killer) { }
+    public void onKill(@NotNull Location location, @Nullable LivingEntity killer) {
+    }
 }

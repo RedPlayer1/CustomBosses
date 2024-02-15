@@ -19,10 +19,11 @@ public interface Boss {
      */
     void onSpawn(BossEntity boss);
 
-     /**
+    /**
      * Fired when the Boss is killed. The entity corresponding to this Boss will be null.
+     *
      * @param location the location of the Boss when it was killed
-     * @param killer the entity that killed the Boss
+     * @param killer   the entity that killed the Boss
      */
-     void onKill(@NotNull Location location, @Nullable LivingEntity killer);
+    void onKill(@NotNull Location location, @Nullable LivingEntity killer);
 }

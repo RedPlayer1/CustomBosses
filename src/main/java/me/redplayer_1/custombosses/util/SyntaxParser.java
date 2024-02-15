@@ -27,6 +27,7 @@ public class SyntaxParser {
 
     /**
      * Sequentially assignes the values to the existing placeholders.
+     *
      * @param values the values to assign (in String form)
      */
     public SyntaxParser setValues(Object... values) {

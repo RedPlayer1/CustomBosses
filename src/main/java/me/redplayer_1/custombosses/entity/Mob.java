@@ -45,13 +45,14 @@ public class Mob implements Listener {
 
     /**
      * Create a new {@link Mob} that is automatically spawned.
-     * @param name the display name (can contain color codes)
-     * @param type type of mob to spawn (Must be a {@link LivingEntity})
-     * @param location the Location to spawn the Mob at
-     * @param maxHealth the maximum health
+     *
+     * @param name        the display name (can contain color codes)
+     * @param type        type of mob to spawn (Must be a {@link LivingEntity})
+     * @param location    the Location to spawn the Mob at
+     * @param maxHealth   the maximum health
      * @param attackRange how far away entities can be attacked form (distance in blocks ^ 2)
-     * @param hostile whether the Mob should attack other entities
-     * @param invincible if the Mob should take damage
+     * @param hostile     whether the Mob should attack other entities
+     * @param invincible  if the Mob should take damage
      */
     public Mob(String name, EntityType type, Location location, double maxHealth, boolean showHealth, double attackRange, boolean hostile, boolean invincible) {
         this(name, type, location, maxHealth, showHealth, attackRange, hostile);
@@ -60,12 +61,13 @@ public class Mob implements Listener {
 
     /**
      * Create a new {@link Mob} that is automatically spawned.
-     * @param name the display name (can contain color codes)
-     * @param type type of mob to spawn (Must be a {@link LivingEntity})
-     * @param location the Location to spawn the Mob at
-     * @param maxHealth the maximum health
+     *
+     * @param name        the display name (can contain color codes)
+     * @param type        type of mob to spawn (Must be a {@link LivingEntity})
+     * @param location    the Location to spawn the Mob at
+     * @param maxHealth   the maximum health
      * @param attackRange how far away entities can be attacked form (distance in blocks ^ 2)
-     * @param hostile whether the Mob should attack other entities
+     * @param hostile     whether the Mob should attack other entities
      */
     public Mob(String name, EntityType type, Location location, double maxHealth, boolean showHealth, double attackRange, boolean hostile) {
         // ensure entity is a living one
@@ -103,7 +105,7 @@ public class Mob implements Listener {
             }
 
             DHAPI.moveHologram(hologram, entity.getLocation().add(0, entity.getEyeHeight() + 1, 0));
-        }, showHealth? 2 : 1);
+        }, showHealth ? 2 : 1);
 
         // moves nametag hologram every 10 ticks to reduce lag
         Bukkit.getScheduler().runTaskTimer(CustomBosses.getInstance(), (task) -> {
@@ -130,6 +132,7 @@ public class Mob implements Listener {
 
     /**
      * Damages the Mob
+     *
      * @param amount amount to damage (hit points)
      */
     public void damage(double amount) {
@@ -142,6 +145,7 @@ public class Mob implements Listener {
 
     /**
      * Kills the Mob and its corresponding Entity
+     *
      * @return if the Mob was successfully killed
      */
     public boolean kill() {
@@ -150,6 +154,7 @@ public class Mob implements Listener {
 
     /**
      * Kills the Mob and its corresponding Entity
+     *
      * @param force if the Mob should die regardless of whether the {@link MobDeathEvent} was cancelled
      * @return if the event was cancelled
      */
@@ -206,6 +211,7 @@ public class Mob implements Listener {
 
     /**
      * Sets the health of the Mob. Values greater than the max can be used by setting ignoreMax to true.
+     *
      * @param ignoreMax whether values greater than the maximum should be allowed
      */
     public void setHealth(double health, boolean ignoreMax) {
@@ -250,7 +256,7 @@ public class Mob implements Listener {
     /**
      * @param manager Function that is called every few ticks to handle the changing of the Hologram
      *                shown above the entity.
-     * @param lines the number of lines to be put on the first page of the Hologram
+     * @param lines   the number of lines to be put on the first page of the Hologram
      */
     public void setHologramManager(Consumer<Hologram> manager, int lines) {
         if (hologram.getPage(0).getLines().size() != lines) {
@@ -265,8 +271,9 @@ public class Mob implements Listener {
 
     /**
      * Sets {@link Mob#invincible} to the value specified for the duration, then reverts it back.
+     *
      * @param invincible value to set
-     * @param ticks how long to set it for (in ticks)
+     * @param ticks      how long to set it for (in ticks)
      */
     public void setInvincible(boolean invincible, long ticks) {
         boolean previous = this.invincible;
@@ -276,6 +283,7 @@ public class Mob implements Listener {
 
     /**
      * Makes the Mob invincible for the duration and then makes it vincible again.
+     *
      * @param ticks how long the Mob should be invincible (in ticks)
      */
     public void setInvincible(long ticks) {

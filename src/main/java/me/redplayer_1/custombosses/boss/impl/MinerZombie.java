@@ -11,7 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MinerZombie implements Boss {
-    public void onPreSpawn(Location spawnLocation, BossEntity.SpawnBuilder builder) { }
+    public void onPreSpawn(Location spawnLocation, BossEntity.SpawnBuilder builder) {
+    }
 
     public void onSpawn(BossEntity boss) {
         EntityEquipment equipment = boss.getMob().getEntity().getEquipment();
@@ -30,5 +31,6 @@ public class MinerZombie implements Boss {
         equipment.setItemInMainHandDropChance(0);
     }
 
-    public void onKill(@NotNull Location location, @Nullable LivingEntity killer) { }
+    public void onKill(@NotNull Location location, @Nullable LivingEntity killer) {
+    }
 }

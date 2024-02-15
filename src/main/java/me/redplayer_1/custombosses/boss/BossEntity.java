@@ -46,7 +46,7 @@ public class BossEntity {
         SpawnBuilder builder = new SpawnBuilder();
         config.doIfBoss(boss -> boss.onPreSpawn(loc, builder));
         SyntaxParser sequenceParser = new SyntaxParser("{player}", "{x}", "{y}", "{z}").setValues(
-                spawner != null? spawner.getName() : "",
+                spawner != null ? spawner.getName() : "",
                 String.format(COORD_FORMAT, loc.x()),
                 String.format(COORD_FORMAT, loc.y()),
                 String.format(COORD_FORMAT, loc.z())
@@ -70,7 +70,7 @@ public class BossEntity {
             config.doIfBoss(boss -> boss.onSpawn(this));
             Location newLoc = entity.getLocation(); // builtin event might have changed the entity's location
             config.runSpawnSequence(sequenceParser.setValues(
-                    spawner != null? spawner.getName() : "",
+                    spawner != null ? spawner.getName() : "",
                     String.format(COORD_FORMAT, newLoc.x()),
                     String.format(COORD_FORMAT, newLoc.y()),
                     String.format(COORD_FORMAT, newLoc.z())
@@ -102,6 +102,7 @@ public class BossEntity {
 
     /**
      * Despawns the boss. This will destroy the boss and its related data.
+     *
      * @see BossEntity#kill(LivingEntity)
      */
     public final void despawn() {
@@ -113,6 +114,7 @@ public class BossEntity {
 
     /**
      * Kills and automatically {@link BossEntity#despawn() despawns} the boss.
+     *
      * @param killer the entity who killed the boss
      */
     public final void kill(@Nullable LivingEntity killer) {
@@ -147,7 +149,7 @@ public class BossEntity {
         config.doIfBoss(boss -> boss.onKill(deathLoc, killer));
         config.runKillSequence(
                 new SyntaxParser("{player}", "{x}", "{y}", "{z}").setValues(
-                        killer != null? killer.getName() : "",
+                        killer != null ? killer.getName() : "",
                         String.format(COORD_FORMAT, deathLoc.x()),
                         String.format(COORD_FORMAT, deathLoc.y()),
                         String.format(COORD_FORMAT, deathLoc.z())
